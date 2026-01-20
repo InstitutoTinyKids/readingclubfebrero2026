@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+<!-- Version: 1.0.4 - Layout Rigid Fix -->
 
 <head>
     <meta charset="UTF-8">
@@ -121,22 +122,29 @@
         }
 
         .card-image-container {
+            flex: 0 0 50% !important;
             width: 50% !important;
+            max-width: 50% !important;
             background: #f8f8f8;
             border-right: 1px solid rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 1.5rem;
+            box-sizing: border-box;
         }
 
         .card-text-container {
+            flex: 0 0 50% !important;
             width: 50% !important;
+            max-width: 50% !important;
             padding: 2.5rem !important;
             display: flex;
             flex-direction: column;
             justify-content: center;
             background: rgba(255, 255, 255, 0.05);
+            box-sizing: border-box;
+            position: relative;
         }
 
         .standard-img {
@@ -205,7 +213,9 @@
 
             .card-image-container,
             .card-text-container {
+                flex: 0 0 50% !important;
                 width: 100% !important;
+                max-width: 100% !important;
                 height: 50% !important;
             }
 
