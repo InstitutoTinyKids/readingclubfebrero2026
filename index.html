@@ -5,14 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>The Girl Who Never Made Mistakes | Ultimate Mobile Fix</title>
+    <title>The Girl Who Never Made Mistakes | Phone Edition Pro</title>
 
     <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;600;700&family=Playfair+Display:wght@700;800&family=Outfit:wght@400;600&display=swap');
@@ -41,8 +40,6 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
         }
 
         .handwriting {
@@ -57,13 +54,14 @@
             background: rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
         }
 
         .glass-dark {
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
@@ -73,45 +71,39 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 12px;
+            padding: 10px;
             overflow: hidden;
         }
 
         .book-card {
             background: var(--bg-paper);
             border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
             display: flex;
             width: 100%;
             height: 100%;
             max-width: 1000px;
             position: relative;
             overflow: hidden;
-            transition: transform 0.3s ease;
         }
 
-        /* Portrait Mode: Aligned and Balanced */
         @media (orientation: portrait) {
             .book-card {
                 flex-direction: column;
             }
 
-            .card-half {
-                width: 100% !important;
-            }
-
             .card-half:first-child {
-                height: 45% !important;
-                border-bottom: 2px solid rgba(0, 0, 0, 0.05);
-                background: white;
+                height: 48% !important;
+                width: 100% !important;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.06);
             }
 
             .card-half:last-child {
-                height: 55% !important;
+                height: 52% !important;
+                width: 100% !important;
             }
         }
 
-        /* Landscape Mode: Side by Side */
         @media (orientation: landscape) {
             .book-card {
                 flex-direction: row;
@@ -123,7 +115,7 @@
             }
 
             .card-half:first-child {
-                border-right: 2px solid rgba(0, 0, 0, 0.05);
+                border-right: 1px solid rgba(0, 0, 0, 0.06);
             }
         }
 
@@ -133,7 +125,7 @@
             pointer-events: none;
             position: absolute;
             inset: 0;
-            z-index: 5;
+            z-index: 10;
         }
 
         .custom-scroll::-webkit-scrollbar {
@@ -145,27 +137,18 @@
             border-radius: 10px;
         }
 
-        .image-container img {
-            width: 100%;
-            height: 100%;
-            object-contain: contain;
-            padding: 10px;
-        }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(5px);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
             }
         }
 
-        .animate-page {
-            animation: fadeIn 0.4s ease-out;
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
         }
     </style>
 </head>
@@ -213,42 +196,36 @@
             { id: 32, pages: "End", imageUrl: "page_1.png", imageAlt: "The End", textEn: "THE END", textEs: "FIN" }
         ];
 
-        const Icon = ({ name, size = 18, color = 'currentColor' }) => {
-            const iconRef = useRef(null);
-            useEffect(() => {
-                if (window.lucide && iconRef.current) {
-                    const ln = name.toLowerCase().replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
-                    iconRef.current.setAttribute('data-lucide', ln);
-                    window.lucide.createIcons({
-                        icons: { [ln]: window.lucide.icons[ln] },
-                        attrs: { stroke: color, width: size, height: size },
-                        nameAttr: 'data-lucide'
-                    });
-                }
-            }, [name, size, color]);
-            return <i ref={iconRef} style={{ display: 'inline-flex', width: size, height: size }}></i>;
+        // 🛡️ ICONOS SVG MANUALES (Independientes de Lucide) 🛡️
+        const SVGIcons = {
+            book: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>,
+            plus: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>,
+            minus: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>,
+            volume: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>,
+            volumeX: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>,
+            chevronLeft: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>,
+            chevronRight: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
         };
+
+        const Icon = ({ name, size = 20, color = 'black', className = "" }) => (
+            <div className={`flex items-center justify-center ${className}`} style={{ width: size, height: size, color: color }}>
+                {SVGIcons[name]}
+            </div>
+        );
 
         function App() {
             const [view, setView] = useState('cover');
             const [pageIndex, setPageIndex] = useState(0);
             const [lang, setLang] = useState('en');
             const [speaking, setSpeaking] = useState(false);
-            const [textSize, setTextSize] = useState(1.4);
-            const [appReady, setAppReady] = useState(false);
+            const [textSize, setTextSize] = useState(1.5);
 
-            useEffect(() => { setAppReady(true); }, []);
             const audioRef = useRef(null);
             const currentStory = storyData[pageIndex];
 
             useEffect(() => {
                 if (audioRef.current) { audioRef.current.pause(); audioRef.current.currentTime = 0; setSpeaking(false); }
             }, [pageIndex, lang, view]);
-
-            const changePage = (idx) => {
-                if (idx < 0 || idx >= storyData.length) return;
-                setPageIndex(idx);
-            };
 
             const speak = () => {
                 if (speaking) { if (audioRef.current) audioRef.current.pause(); setSpeaking(false); return; }
@@ -262,18 +239,18 @@
 
             if (view === 'cover') {
                 return (
-                    <div className="h-full w-full flex flex-col items-center justify-center p-8 text-center bg-black/40">
-                        <div className="mb-12 shadow-2xl">
-                            <div className="gold-frame rounded-sm p-1.5 shadow-2xl bg-[#fdfaf5]">
-                                <img src={`${REPO_URL}page_1.png`} className="w-40 md:w-64 h-auto" />
+                    <div className="h-full w-full flex flex-col items-center justify-center p-8 text-center bg-black/30">
+                        <div className="mb-10 shadow-2xl">
+                            <div className="bg-[#fdfaf5] border-4 border-[#d4af37] rounded-sm p-1 shadow-2xl">
+                                <img src={`${REPO_URL}page_1.png`} className="w-44 md:w-64 h-auto" />
                             </div>
                         </div>
-                        <h1 className="playfair text-4xl font-bold mb-6 italic">
-                            <span className="text-white block text-2xl mb-1">The Girl Who</span>
+                        <h1 className="playfair text-4xl font-bold mb-8 italic">
+                            <span className="text-white block text-2xl mb-1 opacity-90">The Girl Who</span>
                             <span className="text-[#d4af37] text-6xl">NEVER</span><br />
                             <span className="text-white">Made Mistakes</span>
                         </h1>
-                        <button onClick={() => setView('reading')} className="bg-[#d4af37] text-black px-12 py-4 rounded-full font-extrabold text-sm tracking-[0.2em] uppercase shadow-2xl active:scale-95 transition-all">Start Reading</button>
+                        <button onClick={() => setView('reading')} className="bg-[#d4af37] text-black px-12 py-4 rounded-full font-black text-sm tracking-[0.2em] uppercase shadow-2xl active:scale-95 transition-all">Start Reading</button>
                     </div>
                 );
             }
@@ -282,65 +259,69 @@
 
             return (
                 <div className="h-full w-full flex flex-col box-border">
-                    {/* Header - Always Fixed at Top */}
-                    <header className="p-2 md:p-4 z-50">
-                        <div className="glass rounded-3xl px-4 py-2 border border-white/20 flex justify-between items-center shadow-xl">
-                            <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('cover')}>
-                                <div className="bg-[#d4af37] w-9 h-9 rounded-xl flex items-center justify-center shadow-lg"><Icon name="book" color="black" size={20} /></div>
-                                <span className="playfair text-sm font-bold truncate max-w-[100px]">Beatrice</span>
+                    {/* 🔝 HEADER: Fixed & Premium */}
+                    <header className="px-3 pt-3 pb-2 z-50">
+                        <div className="glass rounded-2xl px-3 py-2 flex justify-between items-center shadow-lg">
+                            <div className="flex items-center gap-2" onClick={() => setView('cover')}>
+                                <div className="bg-[#d4af37] w-9 h-9 rounded-xl flex items-center justify-center shadow-inner">
+                                    <Icon name="book" color="black" size={20} />
+                                </div>
+                                <span className="playfair text-xs font-bold text-white whitespace-nowrap">Beatrice Story</span>
                             </div>
 
                             <div className="flex gap-2 items-center">
-                                <div className="flex gap-1 glass-dark p-1 rounded-2xl border border-white/10">
-                                    <button onClick={() => setTextSize(Math.max(1, textSize - 0.2))} className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/5 text-[#d4af37] active:bg-[#d4af37] active:text-black"><Icon name="minus" size={16} /></button>
-                                    <button onClick={() => setTextSize(Math.min(2.5, textSize + 0.2))} className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/5 text-[#d4af37] active:bg-[#d4af37] active:text-black"><Icon name="plus" size={16} /></button>
+                                <div className="flex glass-dark p-1 rounded-xl border border-white/5">
+                                    <button onClick={() => setTextSize(Math.max(1, textSize - 0.2))} className="w-8 h-8 flex items-center justify-center rounded-lg text-[#d4af37] active:bg-white/20"><Icon name="minus" size={16} color="currentColor" /></button>
+                                    <button onClick={() => setTextSize(Math.min(2.5, textSize + 0.2))} className="w-8 h-8 flex items-center justify-center rounded-lg text-[#d4af37] active:bg-white/20"><Icon name="plus" size={16} color="currentColor" /></button>
                                 </div>
-                                <button onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="glass-dark h-9 px-4 rounded-full text-[10px] font-black border-2 border-[#d4af37]/40 text-white shadow-xl">
-                                    {lang === 'en' ? '🇺🇸 ENG' : '🇪🇸 ESP'}
+                                <button onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="glass-dark px-3 h-8 rounded-full text-[9px] font-black border border-white/10 flex items-center gap-1">
+                                    <span className="opacity-80">{lang === 'en' ? '🇺🇸' : '🇪🇸'}</span> {lang.toUpperCase()}
                                 </button>
-                                <button onClick={() => lang === 'en' && speak()} className={`w-10 h-10 flex items-center justify-center rounded-full shadow-2xl transition-all ${lang === 'es' ? 'opacity-20 grayscale bg-gray-600' : speaking ? 'bg-red-500 animate-pulse' : 'bg-[#d4af37] active:scale-90'} text-black`}>
-                                    <Icon name={speaking ? "volume-x" : "volume-2"} color="black" size={22} />
+                                <button onClick={() => lang === 'en' && speak()} className={`w-9 h-9 flex items-center justify-center rounded-full shadow-lg ${lang === 'es' ? 'opacity-20 grayscale bg-gray-600' : speaking ? 'bg-red-500 animate-pulse' : 'bg-[#d4af37]'} text-black`}>
+                                    <Icon name={speaking ? "volumeX" : "volume"} color="black" size={18} />
                                 </button>
                             </div>
                         </div>
                     </header>
 
-                    {/* Dynamic Story Space - Fills Available Height */}
+                    {/* 📖 CONTENT: Balanced proportions */}
                     <main className="book-container">
-                        <div key={pageIndex} className="book-card animate-page">
+                        <div key={pageIndex} className="book-card fade-in shadow-2xl">
                             <div className="paper-texture"></div>
-                            <div className="card-half bg-white flex items-center justify-center relative">
-                                <img src={`${REPO_URL}${currentStory.imageUrl}`} className="w-full h-full object-contain p-2 md:p-6" />
+                            <div className="card-half bg-white flex items-center justify-center p-2 relative">
+                                <img src={`${REPO_URL}${currentStory.imageUrl}`} className="w-full h-full object-contain z-10" />
                             </div>
-                            <div className="card-half p-6 md:p-12 flex flex-col justify-center relative bg-white/5">
-                                <p className="text-stone-800 font-serif overflow-y-auto custom-scroll pr-2 whitespace-pre-line" style={{ fontSize: `${textSize}rem`, lineHeight: '1.4' }}>
+                            <div className="card-half p-6 md:p-10 flex flex-col justify-start relative bg-white/5 overflow-hidden z-20">
+                                <p className="text-stone-800 font-serif overflow-y-auto custom-scroll pr-1 whitespace-pre-line" style={{ fontSize: `${textSize}rem`, lineHeight: '1.4' }}>
                                     {lang === 'es' ? currentStory.textEs : currentStory.textEn}
                                 </p>
                             </div>
                         </div>
                     </main>
 
-                    {/* Navigation - Always Fixed at Bottom */}
-                    <footer className="p-3 md:p-6 pb-2 z-50">
-                        <div className="max-w-xl mx-auto flex items-center gap-4">
-                            <button disabled={pageIndex === 0} onClick={() => changePage(pageIndex - 1)} className="bg-black/50 w-12 h-12 rounded-full flex items-center justify-center active:scale-90 disabled:opacity-10 border border-white/20 shadow-2xl transition-all"><Icon name="chevron-left" size={32} color="white" /></button>
+                    {/* 🔙 FOOTER: Control Area */}
+                    <footer className="px-4 py-3 pb-safe z-50">
+                        <div className="max-w-md mx-auto flex items-center gap-3">
+                            <button disabled={pageIndex === 0} onClick={() => setPageIndex(pageIndex - 1)} className="bg-black/40 w-11 h-11 rounded-full flex items-center justify-center border border-white/10 active:scale-90 disabled:opacity-5 transition-all">
+                                <Icon name="chevronLeft" color="white" size={24} />
+                            </button>
 
                             <div className="flex-grow">
-                                <div className="flex justify-between items-center text-[12px] font-black tracking-widest mb-2 px-2">
+                                <div className="flex justify-between items-center text-[10px] font-black tracking-widest mb-1 px-1">
                                     <div className="flex items-center gap-1 text-[#d4af37]">
-                                        <span className="text-white/70">SCENE</span>
-                                        <input type="number" min="1" max={storyData.length} value={pageIndex + 1} onChange={(e) => { const val = parseInt(e.target.value); if (!isNaN(val) && val >= 1 && val <= storyData.length) changePage(val - 1); }} className="w-8 bg-transparent border-b-2 border-[#d4af37] text-center text-[#d4af37] font-bold" />
-                                        <span className="text-white/40">/ {storyData.length}</span>
+                                        <span className="opacity-60 text-white">SCENE</span>
+                                        <input type="number" value={pageIndex + 1} readOnly className="w-7 bg-transparent border-b border-[#d4af37] text-center text-[#d4af37]" />
+                                        <span className="opacity-30 text-white">/32</span>
                                     </div>
-                                    <span className="text-white/60 font-black">{Math.round(progress)}%</span>
+                                    <span className="opacity-50 text-white">{Math.round(progress)}%</span>
                                 </div>
-                                <div className="h-2.5 bg-black/40 rounded-full border border-white/10 overflow-hidden shadow-inner">
-                                    <div className="h-full bg-gradient-to-r from-[#d4af37] via-[#f59e0b] to-[#d4af37] shadow-[0_0_15px_rgba(212,175,55,0.6)] rounded-full transition-all duration-700" style={{ width: `${progress}%` }}></div>
+                                <div className="h-1.5 bg-black/30 rounded-full border border-white/5 overflow-hidden">
+                                    <div className="h-full bg-gradient-to-r from-[#d4af37] to-[#f59e0b] shadow-[0_0_10px_#d4af37]" style={{ width: `${progress}%` }}></div>
                                 </div>
                             </div>
 
-                            <button disabled={pageIndex === storyData.length - 1} onClick={() => changePage(pageIndex + 1)} className="bg-[#d4af37] w-12 h-12 rounded-full flex items-center justify-center active:scale-90 shadow-[0_0_20px_rgba(212,175,55,0.5)] transition-all">
-                                <Icon name="chevron-right" size={32} color="black" />
+                            <button disabled={pageIndex === storyData.length - 1} onClick={() => setPageIndex(pageIndex + 1)} className="bg-[#d4af37] w-11 h-11 rounded-full flex items-center justify-center shadow-lg active:scale-90 disabled:opacity-20 transition-all">
+                                <Icon name="chevronRight" color="black" size={24} />
                             </button>
                         </div>
                     </footer>
