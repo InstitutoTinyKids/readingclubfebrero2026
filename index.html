@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Girl Who Never Made Mistakes | Premium GitHub Edition</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>The Girl Who Never Made Mistakes | Mobile Premium Fix</title>
 
     <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
@@ -22,14 +23,24 @@
             --bg-paper: #fdfaf5;
         }
 
-        /* 🚀 REPO URL BASE 🚀 */
-        /* Usamos la URL de Raw de tu GitHub para que todo cargue en Wix */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Outfit', sans-serif;
             background: #0f172a url('https://raw.githubusercontent.com/InstitutoTinyKids/readingclubfebrero2026/main/bg.png') no-repeat center center fixed;
             background-size: cover;
             color: #fff;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            height: -webkit-fill-available;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .handwriting {
@@ -41,80 +52,80 @@
         }
 
         .glass {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .glass-dark {
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .book-container {
-            perspective: 2000px;
+            flex-grow: 1;
             width: 100%;
-            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 1rem;
+            overflow: hidden;
         }
 
         .book-card {
             background: var(--bg-paper);
-            border-radius: 4px 24px 24px 4px;
-            box-shadow:
-                -10px 10px 30px rgba(0, 0, 0, 0.5),
-                inset 20px 0 30px -10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
             display: flex;
             width: 100%;
             max-width: 1100px;
-            height: 62vh;
-            min-height: 400px;
+            height: 70vh;
             position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
         }
 
-        .book-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 30px;
-            background: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.05) 50%, transparent 100%);
-            z-index: 10;
-            border-radius: 4px 0 0 4px;
+        /* Responsive Layouts */
+        @media (orientation: portrait) {
+            .book-card {
+                flex-direction: column;
+                height: 82vh;
+            }
+
+            .card-half {
+                width: 100% !important;
+                height: 50% !important;
+            }
+
+            .card-half:first-child {
+                border-right: none !important;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) {
+            .book-card {
+                height: 82vh;
+            }
+
+            .book-container {
+                padding: 0.4rem;
+            }
         }
 
         .paper-texture {
             background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
-            opacity: 0.6;
+            opacity: 0.5;
             pointer-events: none;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .floating {
-            animation: float 4s ease-in-out infinite;
+            position: absolute;
+            inset: 0;
+            z-index: 5;
         }
 
         .custom-scroll::-webkit-scrollbar {
-            width: 6px;
+            width: 4px;
         }
 
         .custom-scroll::-webkit-scrollbar-thumb {
@@ -125,14 +136,30 @@
         .gold-frame {
             border: 2px solid #d4af37;
             padding: 10px;
-            position: relative;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
         }
 
-        .cover-shadow {
-            box-shadow:
-                0 30px 60px -12px rgba(0, 0, 0, 0.5),
-                0 18px 36px -18px rgba(0, 0, 0, 0.5);
+        .page-turn-anim {
+            animation: pageFade 0.4s ease-out;
+        }
+
+        @keyframes pageFade {
+            from {
+                opacity: 0.6;
+                transform: scale(0.99);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Ensure icons are visible */
+        i[data-lucide] {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
@@ -143,7 +170,6 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // 🚀 URL DEL REPOSITORIO DE GITHUB 🚀
         const REPO_URL = "https://raw.githubusercontent.com/InstitutoTinyKids/readingclubfebrero2026/main/";
 
         const storyData = [
@@ -181,20 +207,8 @@
             { id: 32, pages: "End", imageUrl: "page_1.png", imageAlt: "The End", textEn: "THE END", textEs: "FIN" }
         ];
 
-        const Icon = ({ name, size = 20, color = 'currentColor', className = "" }) => {
-            const iconRef = useRef(null);
-            useEffect(() => {
-                if (window.lucide && iconRef.current) {
-                    const lucideName = name.toLowerCase().replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
-                    iconRef.current.setAttribute('data-lucide', lucideName);
-                    window.lucide.createIcons({
-                        icons: { [lucideName]: window.lucide.icons[lucideName] },
-                        attrs: { stroke: color, width: size, height: size, class: className },
-                        nameAttr: 'data-lucide'
-                    });
-                }
-            }, [name, size, color, className]);
-            return <i ref={iconRef} style={{ display: 'inline-block', width: size, height: size }}></i>;
+        const Icon = ({ name, size = 18, color = 'currentColor', className = "" }) => {
+            return <i data-lucide={name} className={className} style={{ width: size, height: size, stroke: color }}></i>;
         };
 
         function App() {
@@ -207,7 +221,13 @@
             const [appReady, setAppReady] = useState(false);
 
             useEffect(() => { setAppReady(true); }, []);
-            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [view, pageIndex, lang, appReady]);
+
+            // Critical: Force icons to refresh whenever something changes
+            useEffect(() => {
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            }, [view, pageIndex, lang, appReady]);
 
             const audioRef = useRef(null);
             const currentStory = storyData[pageIndex];
@@ -219,14 +239,13 @@
             const changePage = (idx) => {
                 if (idx < 0 || idx >= storyData.length) return;
                 setTurning(true);
-                setTimeout(() => { setPageIndex(idx); setTurning(false); }, 300);
+                setTimeout(() => { setPageIndex(idx); setTurning(false); }, 100);
             };
 
             const speak = () => {
                 if (speaking) { if (audioRef.current) audioRef.current.pause(); setSpeaking(false); return; }
                 const idStr = currentStory.id.toString().padStart(2, '0');
                 const audioSrc = `${REPO_URL}audios/audio${idStr}.wav`;
-                if (audioRef.current) audioRef.current.pause();
                 const audio = new Audio(audioSrc);
                 audioRef.current = audio;
                 audio.onended = () => setSpeaking(false);
@@ -235,81 +254,95 @@
 
             const progress = ((pageIndex + 1) / storyData.length) * 100;
 
-            if (!appReady) return <div className="min-h-screen bg-[#1a5d4e] flex items-center justify-center font-bold text-white">Loading...</div>;
-
             if (view === 'cover') {
                 return (
-                    <div className="h-screen w-full flex flex-col items-center justify-center relative overflow-hidden cover-bg font-sans p-4">
-                        <div className="absolute inset-0 z-0 opacity-20">
-                            <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-[#d4af37] rounded-full blur-[120px] animate-pulse"></div>
-                            <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-[#1a5d4e] rounded-full blur-[120px] animate-pulse"></div>
-                        </div>
-                        <div className="z-10 text-center max-w-2xl flex flex-col items-center">
-                            <div className="floating mb-6 relative group">
-                                <div className="gold-frame rounded-sm p-2 shadow-2xl">
-                                    <img src={`${REPO_URL}page_1.png`} className="relative w-48 md:w-56 h-auto mx-auto rounded-sm cover-shadow" />
-                                </div>
+                    <div className="h-full w-full flex flex-col items-center justify-center p-6 text-center">
+                        <div className="mb-10">
+                            <div className="gold-frame rounded-sm p-1 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                                <img src={`${REPO_URL}page_1.png`} className="w-40 md:w-56 h-auto rounded-sm" />
                             </div>
-                            <div className="mb-6 text-center">
-                                <h1 className="playfair text-4xl md:text-5xl font-bold mb-2 leading-tight">
-                                    <span className="italic text-2xl md:text-3xl font-light opacity-80 block">The Girl Who</span>
-                                    <span className="text-[#d4af37] tracking-wider mx-2">NEVER</span> Made Mistakes
-                                </h1>
-                                <p className="text-lg md:text-xl handwriting opacity-80 tracking-wide">By <span className="text-[#d4af37]">Mark Pett</span> & <span className="text-[#d4af37]">Gary Rubinstein</span></p>
-                            </div>
-                            <button onClick={() => setView('reading')} className="bg-[#d4af37] text-black px-12 py-3.5 rounded-sm font-bold text-sm tracking-[0.2em] uppercase hover:bg-[#b08d2b] shadow-xl">Start Reading</button>
-                            <div className="mt-8 text-[10px] font-bold tracking-[0.4em] uppercase opacity-50">Reading Club / Tiny Kids / February 2026</div>
                         </div>
+                        <h1 className="playfair text-4xl font-bold mb-6 italic">
+                            <span className="text-white block text-2xl mb-1">The Girl Who</span>
+                            <span className="text-[#d4af37] text-5xl">NEVER</span><br />
+                            <span className="text-white">Made Mistakes</span>
+                        </h1>
+                        <button onClick={() => setView('reading')} className="bg-[#d4af37] text-black px-12 py-4 rounded-full font-bold text-sm tracking-widest uppercase shadow-2xl active:scale-95 transition-all">Start Reading</button>
                     </div>
                 );
             }
 
             return (
-                <div className="h-screen bg-transparent flex flex-col items-center justify-between p-3 md:p-6 relative overflow-hidden">
-                    <div className="w-full max-w-6xl flex justify-between items-center z-20 glass rounded-2xl px-5 py-2 border border-white/10 shadow-2xl">
-                        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setView('cover')}>
-                            <div className="bg-[#d4af37] p-1.5 rounded-lg flex items-center justify-center"><Icon name="book" size={18} color="black" /></div>
-                            <span className="playfair text-sm md:text-base font-bold group-hover:text-[#d4af37] transition-colors leading-tight">The Girl Who <span className="text-[#d4af37]">Never</span> Made Mistakes</span>
-                        </div>
-                        <div className="flex gap-3 items-center">
-                            <button onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="glass-dark px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/10">{lang === 'en' ? '🇺🇸 ENG' : '🇪🇸 ESP'}</button>
-                            <div className="flex items-center gap-1.5 glass-dark p-1 rounded-xl border border-white/5">
-                                <button onClick={() => setTextSize(Math.max(1, textSize - 0.2))} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-[#d4af37]"><Icon name="minus" size={16} /></button>
-                                <button onClick={() => setTextSize(Math.min(2.5, textSize + 0.2))} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-[#d4af37]"><Icon name="plus" size={16} /></button>
+                <div className="h-full w-full flex flex-col justify-between p-2 md:p-4 box-border">
+                    {/* FIXED HEADER: Enhanced with clear buttons */}
+                    <header className="w-full flex justify-between items-center glass rounded-2xl px-3 py-2 border border-white/20 z-50">
+                        <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('cover')}>
+                            <div className="bg-[#d4af37] w-9 h-9 rounded-lg flex items-center justify-center shadow-lg">
+                                <Icon name="book" color="black" size={20} />
                             </div>
-                            <button onClick={() => lang === 'en' && speak()} className={`w-10 h-10 flex items-center justify-center rounded-full ${lang === 'es' ? 'bg-gray-500 opacity-50 cursor-not-allowed' : speaking ? 'bg-red-500 animate-pulse' : 'bg-[#d4af37]'} text-black shadow-lg shadow-black/20`}><Icon name={speaking ? "volume-x" : "volume-2"} size={18} color="black" /></button>
+                            <span className="playfair text-sm font-bold truncate max-w-[100px] md:max-w-none">Beatrice Story</span>
                         </div>
-                    </div>
-                    <div className="book-container flex-grow w-full flex items-center justify-center relative py-4">
-                        <div className={`book-card ${turning ? 'page-turn-anim' : ''} max-h-full shadow-2xl overflow-hidden`}>
-                            <div className="paper-texture absolute inset-0 z-0"></div>
-                            <div className="w-1/2 relative overflow-hidden border-r border-black/5 bg-[#f5f5f5] flex items-center justify-center">
-                                <img src={`${REPO_URL}${currentStory.imageUrl}`} alt={currentStory.imageAlt} className="w-full h-full object-contain p-2 md:p-6" />
+
+                        <div className="flex gap-2 items-center">
+                            {/* Improved Text Size Controls */}
+                            <div className="flex items-center gap-1 glass-dark p-1 rounded-xl border border-white/10">
+                                <button onClick={() => setTextSize(Math.max(1, textSize - 0.2))} className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 text-[#d4af37] active:bg-[#d4af37] active:text-black">
+                                    <Icon name="minus" size={16} />
+                                </button>
+                                <button onClick={() => setTextSize(Math.min(2.5, textSize + 0.2))} className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 text-[#d4af37] active:bg-[#d4af37] active:text-black">
+                                    <Icon name="plus" size={16} />
+                                </button>
                             </div>
-                            <div className="w-1/2 p-8 md:p-12 flex flex-col justify-center relative bg-white/20">
-                                <p className="text-stone-800 font-serif overflow-y-auto custom-scroll pr-4 max-h-full w-full whitespace-pre-line pb-12" style={{ fontSize: `${textSize}rem`, lineHeight: '1.35' }}>{lang === 'es' ? currentStory.textEs : currentStory.textEn}</p>
-                                <div className="absolute bottom-6 left-12 right-12 border-t border-black/5 pt-4 flex justify-between items-center opacity-30">
-                                    <span className="text-[12px] font-bold tracking-widest text-[#1a5d4e]">Tiny Kids / Reading Club</span>
-                                    <span className="handwriting text-base text-black">February 2026</span>
-                                </div>
+
+                            <button onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="glass-dark h-9 px-4 rounded-full text-[10px] font-bold border-2 border-[#d4af37]/30 text-white shadow-xl">
+                                {lang === 'en' ? '🇺🇸' : '🇪🇸'} {lang === 'en' ? 'ENG' : 'ESP'}
+                            </button>
+
+                            <button onClick={() => lang === 'en' && speak()} className={`w-10 h-10 flex items-center justify-center rounded-full transition-all shadow-2xl ${lang === 'es' ? 'opacity-20 grayscale bg-gray-600' : speaking ? 'bg-red-500 animate-pulse' : 'bg-[#d4af37] active:scale-90'} text-black`}>
+                                <Icon name={speaking ? "volume-x" : "volume-2"} color="black" size={20} />
+                            </button>
+                        </div>
+                    </header>
+
+                    {/* BOOK AREA */}
+                    <main className="book-container">
+                        <div className={`book-card ${turning ? 'page-turn-anim' : ''}`}>
+                            <div className="paper-texture"></div>
+                            <div className="card-half w-1/2 bg-[#f8f8f8] flex items-center justify-center relative">
+                                <img src={`${REPO_URL}${currentStory.imageUrl}`} className="w-full h-full object-contain p-2 md:p-4 z-10" />
+                            </div>
+                            <div className="card-half w-1/2 p-6 md:p-10 flex flex-col justify-center relative bg-white/5 z-20">
+                                <p className="text-stone-800 font-serif overflow-y-auto custom-scroll pr-2 whitespace-pre-line" style={{ fontSize: `${textSize}rem`, lineHeight: '1.4' }}>
+                                    {lang === 'es' ? currentStory.textEs : currentStory.textEn}
+                                </p>
                             </div>
                         </div>
-                    </div>
-                    <div className="w-full max-w-4xl flex items-center gap-6 mb-2">
-                        <button disabled={pageIndex === 0} onClick={() => changePage(pageIndex - 1)} className="bg-white/10 p-3 rounded-full border border-white/5 disabled:opacity-10"><Icon name="chevron-left" size={24} /></button>
+                    </main>
+
+                    {/* FIXED FOOTER NAVIGATION */}
+                    <footer className="w-full max-w-2xl mx-auto flex items-center gap-4 py-2 z-50">
+                        <button disabled={pageIndex === 0} onClick={() => changePage(pageIndex - 1)} className="bg-black/40 w-12 h-12 rounded-full flex items-center justify-center active:scale-90 disabled:opacity-5 border border-white/20 shadow-2xl">
+                            <Icon name="chevron-left" size={28} />
+                        </button>
+
                         <div className="flex-grow">
-                            <div className="flex justify-between items-end mb-1.5 px-2 text-[10px] font-bold uppercase tracking-[0.2em] opacity-60">
-                                <div className="flex items-center gap-1">
-                                    <span>Scene</span>
-                                    <input type="number" min="1" max={storyData.length} value={pageIndex + 1} onChange={(e) => { const val = parseInt(e.target.value); if (!isNaN(val) && val >= 1 && val <= storyData.length) changePage(val - 1); }} className="w-10 bg-transparent border-b border-white/20 text-center text-[#d4af37]" />
-                                    <span>/ {storyData.length}</span>
+                            <div className="flex justify-between items-center text-[11px] font-bold tracking-widest opacity-80 mb-1.5 px-2">
+                                <div className="flex items-center gap-1 text-[#d4af37]">
+                                    <span className="text-white/60">SCENE</span>
+                                    <input type="number" min="1" max={storyData.length} value={pageIndex + 1} onChange={(e) => { const val = parseInt(e.target.value); if (!isNaN(val) && val >= 1 && val <= storyData.length) changePage(val - 1); }} className="w-8 bg-transparent border-b border-[#d4af37] text-center text-[#d4af37] font-bold" />
+                                    <span className="text-white/40">/ {storyData.length}</span>
                                 </div>
-                                <span>{Math.round(progress)}%</span>
+                                <span className="text-white/60">{Math.round(progress)}%</span>
                             </div>
-                            <div className="h-1.5 bg-white/10 rounded-full border border-white/5 overflow-hidden"><div className="h-full bg-gradient-to-r from-[#d4af37] to-[#e6c867] transition-all duration-1000 shadow-[0_0_10px_#d4af37]" style={{ width: `${progress}%` }}></div></div>
+                            <div className="h-2 bg-black/30 rounded-full border border-white/10 overflow-hidden shadow-inner">
+                                <div className="h-full bg-gradient-to-r from-[#d4af37] to-[#f59e0b] shadow-[0_0_15px_rgba(212,175,55,0.4)]" style={{ width: `${progress}%` }}></div>
+                            </div>
                         </div>
-                        <button disabled={pageIndex === storyData.length - 1} onClick={() => changePage(pageIndex + 1)} className="bg-[#d4af37] p-3 rounded-full text-black shadow-lg shadow-[#d4af37]/20"><Icon name="chevron-right" size={24} /></button>
-                    </div>
+
+                        <button disabled={pageIndex === storyData.length - 1} onClick={() => changePage(pageIndex + 1)} className="bg-[#d4af37] w-12 h-12 rounded-full flex items-center justify-center text-black active:scale-90 shadow-[0_0_20px_rgba(212,175,55,0.4)]">
+                            <Icon name="chevron-right" size={28} color="black" />
+                        </button>
+                    </footer>
                 </div>
             );
         }
