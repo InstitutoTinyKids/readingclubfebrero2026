@@ -113,6 +113,39 @@
             animation: float 4s ease-in-out infinite;
         }
 
+        .card-half {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-image-container {
+            width: 50% !important;
+            background: #f8f8f8;
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .card-text-container {
+            width: 50% !important;
+            padding: 2.5rem !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .standard-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.08));
+        }
+
         .custom-scroll::-webkit-scrollbar {
             width: 6px;
         }
@@ -170,14 +203,20 @@
                 border-radius: 16px;
             }
 
-            .card-half {
+            .card-image-container,
+            .card-text-container {
                 width: 100% !important;
                 height: 50% !important;
             }
 
-            .card-half:first-child {
+            .card-image-container {
                 border-right: none !important;
-                border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                padding: 1rem !important;
+            }
+
+            .card-text-container {
+                padding: 1.5rem !important;
             }
 
             .book-footer {
@@ -357,11 +396,19 @@
                     <div className="book-container flex-grow w-full flex items-center justify-center relative py-4">
                         <div className={`book-card ${turning ? 'page-turn-anim' : ''} max-h-full shadow-2xl overflow-hidden`}>
                             <div className="paper-texture absolute inset-0 z-0"></div>
-                            <div className="card-half relative overflow-hidden border-r border-black/5 bg-[#f5f5f5] flex items-center justify-center">
-                                <img src={`${REPO_URL}${currentStory.imageUrl}`} alt={currentStory.imageAlt} className="w-full h-full object-contain p-2 md:p-6" />
+
+                            <div className="card-image-container relative z-10">
+                                <img
+                                    src={`${REPO_URL}${currentStory.imageUrl}`}
+                                    alt={currentStory.imageAlt}
+                                    className="standard-img"
+                                />
                             </div>
-                            <div className="card-half p-6 md:p-12 flex flex-col justify-center relative bg-white/20">
-                                <p className="text-stone-800 font-serif overflow-y-auto custom-scroll pr-4 max-h-full w-full whitespace-pre-line pb-12" style={{ fontSize: `${textSize}rem`, lineHeight: '1.35' }}>{lang === 'es' ? currentStory.textEs : currentStory.textEn}</p>
+
+                            <div className="card-text-container relative z-10">
+                                <p className="text-stone-800 font-serif overflow-y-auto custom-scroll pr-4 max-h-full w-full whitespace-pre-line pb-12" style={{ fontSize: `${textSize}rem`, lineHeight: '1.4' }}>
+                                    {lang === 'es' ? currentStory.textEs : currentStory.textEn}
+                                </p>
                                 <div className="book-footer absolute bottom-6 left-12 right-12 border-t border-black/5 pt-4 flex justify-between items-center opacity-30">
                                     <span className="text-[12px] font-bold tracking-widest text-[#1a5d4e]">Tiny Kids / Reading Club</span>
                                     <span className="handwriting text-base text-black">February 2026</span>
