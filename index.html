@@ -137,21 +137,56 @@
 
         @media (max-width: 480px) {
             .nav-title {
-                display: none !important;
+                display: block !important;
+                font-size: 10px !important;
             }
 
             .nav-group {
-                gap: 0.5rem !important;
+                gap: 0.35rem !important;
             }
 
             .nav-btn-sm {
-                transform: scale(0.85);
+                transform: scale(0.8);
             }
 
             .nav-lang-btn {
-                padding-left: 0.5rem !important;
-                padding-right: 0.5rem !important;
+                padding-left: 0.4rem !important;
+                padding-right: 0.4rem !important;
                 font-size: 8px !important;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .nav-title {
+                display: none !important;
+            }
+        }
+
+        @media (orientation: portrait) {
+            .book-card {
+                flex-direction: column !important;
+                height: 75vh !important;
+                max-height: 600px;
+            }
+
+            .card-half {
+                width: 100% !important;
+                height: 50% !important;
+            }
+
+            .card-half:first-child {
+                border-right: none !important;
+                border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+            }
+
+            .book-footer {
+                bottom: 1rem !important;
+                left: 1.5rem !important;
+                right: 1.5rem !important;
+            }
+
+            .book-footer span {
+                font-size: 9px !important;
             }
         }
     </style>
@@ -268,7 +303,7 @@
 
             if (view === 'cover') {
                 return (
-                    <div className="h-screen w-full flex flex-col items-center justify-center relative overflow-hidden cover-bg font-sans p-4">
+                    <div className="h-screen w-full flex flex-col items-center justify-start pt-16 md:justify-center md:pt-0 relative overflow-hidden cover-bg font-sans p-4">
                         <div className="absolute inset-0 z-0 opacity-20">
                             <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-[#d4af37] rounded-full blur-[120px] animate-pulse"></div>
                             <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-[#1a5d4e] rounded-full blur-[120px] animate-pulse"></div>
@@ -312,12 +347,12 @@
                     <div className="book-container flex-grow w-full flex items-center justify-center relative py-4">
                         <div className={`book-card ${turning ? 'page-turn-anim' : ''} max-h-full shadow-2xl overflow-hidden`}>
                             <div className="paper-texture absolute inset-0 z-0"></div>
-                            <div className="w-1/2 relative overflow-hidden border-r border-black/5 bg-[#f5f5f5] flex items-center justify-center">
+                            <div className="card-half relative overflow-hidden border-r border-black/5 bg-[#f5f5f5] flex items-center justify-center">
                                 <img src={`${REPO_URL}${currentStory.imageUrl}`} alt={currentStory.imageAlt} className="w-full h-full object-contain p-2 md:p-6" />
                             </div>
-                            <div className="w-1/2 p-8 md:p-12 flex flex-col justify-center relative bg-white/20">
+                            <div className="card-half p-6 md:p-12 flex flex-col justify-center relative bg-white/20">
                                 <p className="text-stone-800 font-serif overflow-y-auto custom-scroll pr-4 max-h-full w-full whitespace-pre-line pb-12" style={{ fontSize: `${textSize}rem`, lineHeight: '1.35' }}>{lang === 'es' ? currentStory.textEs : currentStory.textEn}</p>
-                                <div className="absolute bottom-6 left-12 right-12 border-t border-black/5 pt-4 flex justify-between items-center opacity-30">
+                                <div className="book-footer absolute bottom-6 left-12 right-12 border-t border-black/5 pt-4 flex justify-between items-center opacity-30">
                                     <span className="text-[12px] font-bold tracking-widest text-[#1a5d4e]">Tiny Kids / Reading Club</span>
                                     <span className="handwriting text-base text-black">February 2026</span>
                                 </div>
