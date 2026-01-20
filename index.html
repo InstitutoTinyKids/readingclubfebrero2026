@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>The Girl Who Never Made Mistakes | Mobile Premium Fix</title>
+    <title>The Girl Who Never Made Mistakes | Ultimate Mobile Fix</title>
 
     <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
@@ -41,6 +41,8 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         .handwriting {
@@ -53,71 +55,81 @@
 
         .glass {
             background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .glass-dark {
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .book-container {
-            flex-grow: 1;
+            flex: 1;
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1rem;
+            padding: 12px;
             overflow: hidden;
         }
 
         .book-card {
             background: var(--bg-paper);
-            border-radius: 12px;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
             display: flex;
             width: 100%;
-            max-width: 1100px;
-            height: 70vh;
+            height: 100%;
+            max-width: 1000px;
             position: relative;
             overflow: hidden;
+            transition: transform 0.3s ease;
         }
 
-        /* Responsive Layouts */
+        /* Portrait Mode: Aligned and Balanced */
         @media (orientation: portrait) {
             .book-card {
                 flex-direction: column;
-                height: 82vh;
             }
 
             .card-half {
                 width: 100% !important;
-                height: 50% !important;
             }
 
             .card-half:first-child {
-                border-right: none !important;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+                height: 45% !important;
+                border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+                background: white;
+            }
+
+            .card-half:last-child {
+                height: 55% !important;
             }
         }
 
-        @media (orientation: landscape) and (max-height: 500px) {
+        /* Landscape Mode: Side by Side */
+        @media (orientation: landscape) {
             .book-card {
-                height: 82vh;
+                flex-direction: row;
             }
 
-            .book-container {
-                padding: 0.4rem;
+            .card-half {
+                width: 50% !important;
+                height: 100% !important;
+            }
+
+            .card-half:first-child {
+                border-right: 2px solid rgba(0, 0, 0, 0.05);
             }
         }
 
         .paper-texture {
             background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
-            opacity: 0.5;
+            opacity: 0.4;
             pointer-events: none;
             position: absolute;
             inset: 0;
@@ -133,33 +145,27 @@
             border-radius: 10px;
         }
 
-        .gold-frame {
-            border: 2px solid #d4af37;
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-contain: contain;
             padding: 10px;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
         }
 
-        .page-turn-anim {
-            animation: pageFade 0.4s ease-out;
-        }
-
-        @keyframes pageFade {
+        @keyframes fadeIn {
             from {
-                opacity: 0.6;
-                transform: scale(0.99);
+                opacity: 0;
+                transform: translateY(5px);
             }
 
             to {
                 opacity: 1;
-                transform: scale(1);
+                transform: translateY(0);
             }
         }
 
-        /* Ensure icons are visible */
-        i[data-lucide] {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .animate-page {
+            animation: fadeIn 0.4s ease-out;
         }
     </style>
 </head>
@@ -185,7 +191,7 @@
             { id: 10, pages: "13", imageUrl: "page_13.png", imageAlt: "The catch", textEn: "But she didn't! 'That was close!' thought Beatrice.\n\n'Sorry, Beatrice... I dropped a piece of rhubarb.'\n\n'-on't -ention it, -illie.'", textEs: "¡Pero no lo hizo! '¡Estuvo cerca!', pensó Beatrice.\n\n'Perdona, Beatrice... se me cayó un trozo de ruibarbo'.\n\n'No tiene importancia, Millie'." },
             { id: 11, pages: "14", imageUrl: "page_14.png", imageAlt: "Thinking about it", textEn: "For the rest of the school day, Beatrice could not stop thinking about her Almost Mistake.", textEs: "El resto del día escolar, Beatrice no pudo dejar de pensar en su 'Casi Error'." },
             { id: 12, pages: "15", imageUrl: "page_15.png", imageAlt: "Ice skating", textEn: "On her way home from school, Beatrice watched Millie and Sarah ice-skating in the park.\n\n'Come join us!' said Millie. 'It's fun!' said Sarah.\n\nBeatrice watched them slip and slide on the frozen pond. Millie and Sarah laughed as they wobbled on the ice.\n\n'No, thanks,' said Beatrice.", textEs: "De camino a casa desde la escuela, Beatrice vio a Millie y Sarah patinando en el parque.\n\n'¡Vengan con nosotras!', dijo Millie. '¡Es divertido!', dijo Sarah.\n\nBeatrice las vio resbalar y deslizarse en el estanque congelado. Millie y Sarah se reían mientras se tambaleaban en el hielo.\n\n'No, gracias', dijo Beatrice." },
-            { id: 13, pages: "16", imageUrl: "page_16.png", imageAlt: "Dinner worry", textEn: "At supper, Beatrice barely touched her food.\n\n'Is everything all right, kiddo?' asked her father.\n\n'I'm worried I'll mess up tonight,' said Beatrice. 'And everyone will be watching.'\n\n'Worry? You don't make mistakes!' he said with a smile.\n\nBeatrice tried to smile too.", textEs: "En la cena, Beatrice apenas probó bocado.\n\n'¿Está todo bien, pequeña?', preguntó su padre.\n\n'Me preocupa fallar esta noche', dijo Beatrice. 'Y todo el mundo estará mirando'.\n\n'¿Preocuparte? ¡Tú no cometes errores!', dijo él con una sonrisa. Beatrice intentó sonreír también." },
+            { id: 13, pages: "16", imageUrl: "page_16.png", imageAlt: "Dinner worry", textEn: "At supper, Beatrice barely touched her food.\n\n'Is everything all right, kiddo?' asked her father.\n\n'I'm worried I'll mess up tonight,' said Beatrice. 'And everyone will be watching.'\n\n'Worry? You don't make mistakes!' he said with a smile.\n\nBeatrice tried to smile too.", textEs: "En la cena, Beatrice apenas probó bocado.\n\n'¿Está todo bien, pequeña?', preguntó su padre.\n\n'Me preocupa fallar esta noche', dijo Beatrice. 'And everyone will be watching'.\n\n'¿Preocuparte? ¡Tú no cometes errores!', dijo él con una sonrisa. Beatrice intentó sonreír también." },
             { id: 14, pages: "17", imageUrl: "page_17.png", imageAlt: "Pre-show setup", textEn: "After supper, Beatrice got ready for the talent show.\n\nFirst, she woke Humbert from his nap. \n\nNext, she got the salt shaker from the kitchen table. \n\nFinally, she filled a balloon with water.", textEs: "Tras la cena, se preparó para el show. Despertó a Humbert, tomó el salero y llenó un globo con agua." },
             { id: 15, pages: "18", imageUrl: "page_18.png", imageAlt: "On stage", textEn: "The school auditorium was packed! Beatrice felt her stomach jumping around inside her.", textEs: "¡El auditorio estaba lleno! Beatrice sentía mariposas en el estómago." },
             { id: 16, pages: "19", imageUrl: "page_19.png", imageAlt: "Perfect reputation", textEn: "Beatrice waited for her juggling music to begin. \n\n'That's her! That's the Girl Who Never Makes Mistakes!' said a woman.\n\n'Oh! We know she'll be perfect!' said a man.\n\nWhen the music started, she tossed Humbert into the air.\n\nNext, she added the salt shaker.\n\nAnd finally, the water balloon.", textEs: "'¡Es ella! ¡La chica que nunca comete errores!', dijo una mujer. '¡Sabemos que será perfecta!', dijo un hombre.\n\nCuando empezó la música, lanzó a Humbert, luego el salero y el globo." },
@@ -207,8 +213,20 @@
             { id: 32, pages: "End", imageUrl: "page_1.png", imageAlt: "The End", textEn: "THE END", textEs: "FIN" }
         ];
 
-        const Icon = ({ name, size = 18, color = 'currentColor', className = "" }) => {
-            return <i data-lucide={name} className={className} style={{ width: size, height: size, stroke: color }}></i>;
+        const Icon = ({ name, size = 18, color = 'currentColor' }) => {
+            const iconRef = useRef(null);
+            useEffect(() => {
+                if (window.lucide && iconRef.current) {
+                    const ln = name.toLowerCase().replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+                    iconRef.current.setAttribute('data-lucide', ln);
+                    window.lucide.createIcons({
+                        icons: { [ln]: window.lucide.icons[ln] },
+                        attrs: { stroke: color, width: size, height: size },
+                        nameAttr: 'data-lucide'
+                    });
+                }
+            }, [name, size, color]);
+            return <i ref={iconRef} style={{ display: 'inline-flex', width: size, height: size }}></i>;
         };
 
         function App() {
@@ -216,19 +234,10 @@
             const [pageIndex, setPageIndex] = useState(0);
             const [lang, setLang] = useState('en');
             const [speaking, setSpeaking] = useState(false);
-            const [turning, setTurning] = useState(false);
             const [textSize, setTextSize] = useState(1.4);
             const [appReady, setAppReady] = useState(false);
 
             useEffect(() => { setAppReady(true); }, []);
-
-            // Critical: Force icons to refresh whenever something changes
-            useEffect(() => {
-                if (window.lucide) {
-                    window.lucide.createIcons();
-                }
-            }, [view, pageIndex, lang, appReady]);
-
             const audioRef = useRef(null);
             const currentStory = storyData[pageIndex];
 
@@ -238,8 +247,7 @@
 
             const changePage = (idx) => {
                 if (idx < 0 || idx >= storyData.length) return;
-                setTurning(true);
-                setTimeout(() => { setPageIndex(idx); setTurning(false); }, 100);
+                setPageIndex(idx);
             };
 
             const speak = () => {
@@ -252,66 +260,59 @@
                 audio.play().then(() => setSpeaking(true)).catch(() => setSpeaking(false));
             };
 
-            const progress = ((pageIndex + 1) / storyData.length) * 100;
-
             if (view === 'cover') {
                 return (
-                    <div className="h-full w-full flex flex-col items-center justify-center p-6 text-center">
-                        <div className="mb-10">
-                            <div className="gold-frame rounded-sm p-1 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-                                <img src={`${REPO_URL}page_1.png`} className="w-40 md:w-56 h-auto rounded-sm" />
+                    <div className="h-full w-full flex flex-col items-center justify-center p-8 text-center bg-black/40">
+                        <div className="mb-12 shadow-2xl">
+                            <div className="gold-frame rounded-sm p-1.5 shadow-2xl bg-[#fdfaf5]">
+                                <img src={`${REPO_URL}page_1.png`} className="w-40 md:w-64 h-auto" />
                             </div>
                         </div>
                         <h1 className="playfair text-4xl font-bold mb-6 italic">
                             <span className="text-white block text-2xl mb-1">The Girl Who</span>
-                            <span className="text-[#d4af37] text-5xl">NEVER</span><br />
+                            <span className="text-[#d4af37] text-6xl">NEVER</span><br />
                             <span className="text-white">Made Mistakes</span>
                         </h1>
-                        <button onClick={() => setView('reading')} className="bg-[#d4af37] text-black px-12 py-4 rounded-full font-bold text-sm tracking-widest uppercase shadow-2xl active:scale-95 transition-all">Start Reading</button>
+                        <button onClick={() => setView('reading')} className="bg-[#d4af37] text-black px-12 py-4 rounded-full font-extrabold text-sm tracking-[0.2em] uppercase shadow-2xl active:scale-95 transition-all">Start Reading</button>
                     </div>
                 );
             }
 
+            const progress = ((pageIndex + 1) / storyData.length) * 100;
+
             return (
-                <div className="h-full w-full flex flex-col justify-between p-2 md:p-4 box-border">
-                    {/* FIXED HEADER: Enhanced with clear buttons */}
-                    <header className="w-full flex justify-between items-center glass rounded-2xl px-3 py-2 border border-white/20 z-50">
-                        <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('cover')}>
-                            <div className="bg-[#d4af37] w-9 h-9 rounded-lg flex items-center justify-center shadow-lg">
-                                <Icon name="book" color="black" size={20} />
-                            </div>
-                            <span className="playfair text-sm font-bold truncate max-w-[100px] md:max-w-none">Beatrice Story</span>
-                        </div>
-
-                        <div className="flex gap-2 items-center">
-                            {/* Improved Text Size Controls */}
-                            <div className="flex items-center gap-1 glass-dark p-1 rounded-xl border border-white/10">
-                                <button onClick={() => setTextSize(Math.max(1, textSize - 0.2))} className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 text-[#d4af37] active:bg-[#d4af37] active:text-black">
-                                    <Icon name="minus" size={16} />
-                                </button>
-                                <button onClick={() => setTextSize(Math.min(2.5, textSize + 0.2))} className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 text-[#d4af37] active:bg-[#d4af37] active:text-black">
-                                    <Icon name="plus" size={16} />
-                                </button>
+                <div className="h-full w-full flex flex-col box-border">
+                    {/* Header - Always Fixed at Top */}
+                    <header className="p-2 md:p-4 z-50">
+                        <div className="glass rounded-3xl px-4 py-2 border border-white/20 flex justify-between items-center shadow-xl">
+                            <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('cover')}>
+                                <div className="bg-[#d4af37] w-9 h-9 rounded-xl flex items-center justify-center shadow-lg"><Icon name="book" color="black" size={20} /></div>
+                                <span className="playfair text-sm font-bold truncate max-w-[100px]">Beatrice</span>
                             </div>
 
-                            <button onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="glass-dark h-9 px-4 rounded-full text-[10px] font-bold border-2 border-[#d4af37]/30 text-white shadow-xl">
-                                {lang === 'en' ? '🇺🇸' : '🇪🇸'} {lang === 'en' ? 'ENG' : 'ESP'}
-                            </button>
-
-                            <button onClick={() => lang === 'en' && speak()} className={`w-10 h-10 flex items-center justify-center rounded-full transition-all shadow-2xl ${lang === 'es' ? 'opacity-20 grayscale bg-gray-600' : speaking ? 'bg-red-500 animate-pulse' : 'bg-[#d4af37] active:scale-90'} text-black`}>
-                                <Icon name={speaking ? "volume-x" : "volume-2"} color="black" size={20} />
-                            </button>
+                            <div className="flex gap-2 items-center">
+                                <div className="flex gap-1 glass-dark p-1 rounded-2xl border border-white/10">
+                                    <button onClick={() => setTextSize(Math.max(1, textSize - 0.2))} className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/5 text-[#d4af37] active:bg-[#d4af37] active:text-black"><Icon name="minus" size={16} /></button>
+                                    <button onClick={() => setTextSize(Math.min(2.5, textSize + 0.2))} className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/5 text-[#d4af37] active:bg-[#d4af37] active:text-black"><Icon name="plus" size={16} /></button>
+                                </div>
+                                <button onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="glass-dark h-9 px-4 rounded-full text-[10px] font-black border-2 border-[#d4af37]/40 text-white shadow-xl">
+                                    {lang === 'en' ? '🇺🇸 ENG' : '🇪🇸 ESP'}
+                                </button>
+                                <button onClick={() => lang === 'en' && speak()} className={`w-10 h-10 flex items-center justify-center rounded-full shadow-2xl transition-all ${lang === 'es' ? 'opacity-20 grayscale bg-gray-600' : speaking ? 'bg-red-500 animate-pulse' : 'bg-[#d4af37] active:scale-90'} text-black`}>
+                                    <Icon name={speaking ? "volume-x" : "volume-2"} color="black" size={22} />
+                                </button>
+                            </div>
                         </div>
                     </header>
 
-                    {/* BOOK AREA */}
+                    {/* Dynamic Story Space - Fills Available Height */}
                     <main className="book-container">
-                        <div className={`book-card ${turning ? 'page-turn-anim' : ''}`}>
+                        <div key={pageIndex} className="book-card animate-page">
                             <div className="paper-texture"></div>
-                            <div className="card-half w-1/2 bg-[#f8f8f8] flex items-center justify-center relative">
-                                <img src={`${REPO_URL}${currentStory.imageUrl}`} className="w-full h-full object-contain p-2 md:p-4 z-10" />
+                            <div className="card-half bg-white flex items-center justify-center relative">
+                                <img src={`${REPO_URL}${currentStory.imageUrl}`} className="w-full h-full object-contain p-2 md:p-6" />
                             </div>
-                            <div className="card-half w-1/2 p-6 md:p-10 flex flex-col justify-center relative bg-white/5 z-20">
+                            <div className="card-half p-6 md:p-12 flex flex-col justify-center relative bg-white/5">
                                 <p className="text-stone-800 font-serif overflow-y-auto custom-scroll pr-2 whitespace-pre-line" style={{ fontSize: `${textSize}rem`, lineHeight: '1.4' }}>
                                     {lang === 'es' ? currentStory.textEs : currentStory.textEn}
                                 </p>
@@ -319,29 +320,29 @@
                         </div>
                     </main>
 
-                    {/* FIXED FOOTER NAVIGATION */}
-                    <footer className="w-full max-w-2xl mx-auto flex items-center gap-4 py-2 z-50">
-                        <button disabled={pageIndex === 0} onClick={() => changePage(pageIndex - 1)} className="bg-black/40 w-12 h-12 rounded-full flex items-center justify-center active:scale-90 disabled:opacity-5 border border-white/20 shadow-2xl">
-                            <Icon name="chevron-left" size={28} />
-                        </button>
+                    {/* Navigation - Always Fixed at Bottom */}
+                    <footer className="p-3 md:p-6 pb-2 z-50">
+                        <div className="max-w-xl mx-auto flex items-center gap-4">
+                            <button disabled={pageIndex === 0} onClick={() => changePage(pageIndex - 1)} className="bg-black/50 w-12 h-12 rounded-full flex items-center justify-center active:scale-90 disabled:opacity-10 border border-white/20 shadow-2xl transition-all"><Icon name="chevron-left" size={32} color="white" /></button>
 
-                        <div className="flex-grow">
-                            <div className="flex justify-between items-center text-[11px] font-bold tracking-widest opacity-80 mb-1.5 px-2">
-                                <div className="flex items-center gap-1 text-[#d4af37]">
-                                    <span className="text-white/60">SCENE</span>
-                                    <input type="number" min="1" max={storyData.length} value={pageIndex + 1} onChange={(e) => { const val = parseInt(e.target.value); if (!isNaN(val) && val >= 1 && val <= storyData.length) changePage(val - 1); }} className="w-8 bg-transparent border-b border-[#d4af37] text-center text-[#d4af37] font-bold" />
-                                    <span className="text-white/40">/ {storyData.length}</span>
+                            <div className="flex-grow">
+                                <div className="flex justify-between items-center text-[12px] font-black tracking-widest mb-2 px-2">
+                                    <div className="flex items-center gap-1 text-[#d4af37]">
+                                        <span className="text-white/70">SCENE</span>
+                                        <input type="number" min="1" max={storyData.length} value={pageIndex + 1} onChange={(e) => { const val = parseInt(e.target.value); if (!isNaN(val) && val >= 1 && val <= storyData.length) changePage(val - 1); }} className="w-8 bg-transparent border-b-2 border-[#d4af37] text-center text-[#d4af37] font-bold" />
+                                        <span className="text-white/40">/ {storyData.length}</span>
+                                    </div>
+                                    <span className="text-white/60 font-black">{Math.round(progress)}%</span>
                                 </div>
-                                <span className="text-white/60">{Math.round(progress)}%</span>
+                                <div className="h-2.5 bg-black/40 rounded-full border border-white/10 overflow-hidden shadow-inner">
+                                    <div className="h-full bg-gradient-to-r from-[#d4af37] via-[#f59e0b] to-[#d4af37] shadow-[0_0_15px_rgba(212,175,55,0.6)] rounded-full transition-all duration-700" style={{ width: `${progress}%` }}></div>
+                                </div>
                             </div>
-                            <div className="h-2 bg-black/30 rounded-full border border-white/10 overflow-hidden shadow-inner">
-                                <div className="h-full bg-gradient-to-r from-[#d4af37] to-[#f59e0b] shadow-[0_0_15px_rgba(212,175,55,0.4)]" style={{ width: `${progress}%` }}></div>
-                            </div>
-                        </div>
 
-                        <button disabled={pageIndex === storyData.length - 1} onClick={() => changePage(pageIndex + 1)} className="bg-[#d4af37] w-12 h-12 rounded-full flex items-center justify-center text-black active:scale-90 shadow-[0_0_20px_rgba(212,175,55,0.4)]">
-                            <Icon name="chevron-right" size={28} color="black" />
-                        </button>
+                            <button disabled={pageIndex === storyData.length - 1} onClick={() => changePage(pageIndex + 1)} className="bg-[#d4af37] w-12 h-12 rounded-full flex items-center justify-center active:scale-90 shadow-[0_0_20px_rgba(212,175,55,0.5)] transition-all">
+                                <Icon name="chevron-right" size={32} color="black" />
+                            </button>
+                        </div>
                     </footer>
                 </div>
             );
