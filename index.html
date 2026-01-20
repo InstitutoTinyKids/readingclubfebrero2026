@@ -3,15 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>The Girl Who Never Made Mistakes | Phone Edition Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Girl Who Never Made Mistakes | Premium GitHub Edition</title>
 
     <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;600;700&family=Playfair+Display:wght@700;800&family=Outfit:wght@400;600&display=swap');
@@ -22,24 +22,14 @@
             --bg-paper: #fdfaf5;
         }
 
-        * {
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            box-sizing: border-box;
-        }
-
+        /* 🚀 REPO URL BASE 🚀 */
+        /* Usamos la URL de Raw de tu GitHub para que todo cargue en Wix */
         body {
             font-family: 'Outfit', sans-serif;
             background: #0f172a url('https://raw.githubusercontent.com/InstitutoTinyKids/readingclubfebrero2026/main/bg.png') no-repeat center center fixed;
             background-size: cover;
             color: #fff;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            height: -webkit-fill-available;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
         }
 
         .handwriting {
@@ -51,85 +41,80 @@
         }
 
         .glass {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
         .glass-dark {
-            background: rgba(0, 0, 0, 0.55);
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .book-container {
-            flex: 1;
+            perspective: 2000px;
             width: 100%;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px;
-            overflow: hidden;
+            padding: 2rem;
         }
 
         .book-card {
             background: var(--bg-paper);
-            border-radius: 16px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            border-radius: 4px 24px 24px 4px;
+            box-shadow:
+                -10px 10px 30px rgba(0, 0, 0, 0.5),
+                inset 20px 0 30px -10px rgba(0, 0, 0, 0.1);
             display: flex;
             width: 100%;
-            height: 100%;
-            max-width: 1000px;
+            max-width: 1100px;
+            height: 62vh;
+            min-height: 400px;
             position: relative;
-            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        @media (orientation: portrait) {
-            .book-card {
-                flex-direction: column;
-            }
-
-            .card-half:first-child {
-                height: 48% !important;
-                width: 100% !important;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-            }
-
-            .card-half:last-child {
-                height: 52% !important;
-                width: 100% !important;
-            }
-        }
-
-        @media (orientation: landscape) {
-            .book-card {
-                flex-direction: row;
-            }
-
-            .card-half {
-                width: 50% !important;
-                height: 100% !important;
-            }
-
-            .card-half:first-child {
-                border-right: 1px solid rgba(0, 0, 0, 0.06);
-            }
+        .book-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 30px;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.05) 50%, transparent 100%);
+            z-index: 10;
+            border-radius: 4px 0 0 4px;
         }
 
         .paper-texture {
             background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
-            opacity: 0.4;
+            opacity: 0.6;
             pointer-events: none;
-            position: absolute;
-            inset: 0;
-            z-index: 10;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .floating {
+            animation: float 4s ease-in-out infinite;
         }
 
         .custom-scroll::-webkit-scrollbar {
-            width: 4px;
+            width: 6px;
         }
 
         .custom-scroll::-webkit-scrollbar-thumb {
@@ -137,18 +122,37 @@
             border-radius: 10px;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+        .gold-frame {
+            border: 2px solid #d4af37;
+            padding: 10px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
         }
 
-        .fade-in {
-            animation: fadeIn 0.3s ease-out;
+        .cover-shadow {
+            box-shadow:
+                0 30px 60px -12px rgba(0, 0, 0, 0.5),
+                0 18px 36px -18px rgba(0, 0, 0, 0.5);
+        }
+
+        @media (max-width: 480px) {
+            .nav-title {
+                display: none !important;
+            }
+
+            .nav-group {
+                gap: 0.5rem !important;
+            }
+
+            .nav-btn-sm {
+                transform: scale(0.85);
+            }
+
+            .nav-lang-btn {
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
+                font-size: 8px !important;
+            }
         }
     </style>
 </head>
@@ -159,6 +163,7 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
+        // 🚀 URL DEL REPOSITORIO DE GITHUB 🚀
         const REPO_URL = "https://raw.githubusercontent.com/InstitutoTinyKids/readingclubfebrero2026/main/";
 
         const storyData = [
@@ -174,7 +179,7 @@
             { id: 10, pages: "13", imageUrl: "page_13.png", imageAlt: "The catch", textEn: "But she didn't! 'That was close!' thought Beatrice.\n\n'Sorry, Beatrice... I dropped a piece of rhubarb.'\n\n'-on't -ention it, -illie.'", textEs: "¡Pero no lo hizo! '¡Estuvo cerca!', pensó Beatrice.\n\n'Perdona, Beatrice... se me cayó un trozo de ruibarbo'.\n\n'No tiene importancia, Millie'." },
             { id: 11, pages: "14", imageUrl: "page_14.png", imageAlt: "Thinking about it", textEn: "For the rest of the school day, Beatrice could not stop thinking about her Almost Mistake.", textEs: "El resto del día escolar, Beatrice no pudo dejar de pensar en su 'Casi Error'." },
             { id: 12, pages: "15", imageUrl: "page_15.png", imageAlt: "Ice skating", textEn: "On her way home from school, Beatrice watched Millie and Sarah ice-skating in the park.\n\n'Come join us!' said Millie. 'It's fun!' said Sarah.\n\nBeatrice watched them slip and slide on the frozen pond. Millie and Sarah laughed as they wobbled on the ice.\n\n'No, thanks,' said Beatrice.", textEs: "De camino a casa desde la escuela, Beatrice vio a Millie y Sarah patinando en el parque.\n\n'¡Vengan con nosotras!', dijo Millie. '¡Es divertido!', dijo Sarah.\n\nBeatrice las vio resbalar y deslizarse en el estanque congelado. Millie y Sarah se reían mientras se tambaleaban en el hielo.\n\n'No, gracias', dijo Beatrice." },
-            { id: 13, pages: "16", imageUrl: "page_16.png", imageAlt: "Dinner worry", textEn: "At supper, Beatrice barely touched her food.\n\n'Is everything all right, kiddo?' asked her father.\n\n'I'm worried I'll mess up tonight,' said Beatrice. 'And everyone will be watching.'\n\n'Worry? You don't make mistakes!' he said with a smile.\n\nBeatrice tried to smile too.", textEs: "En la cena, Beatrice apenas probó bocado.\n\n'¿Está todo bien, pequeña?', preguntó su padre.\n\n'Me preocupa fallar esta noche', dijo Beatrice. 'And everyone will be watching'.\n\n'¿Preocuparte? ¡Tú no cometes errores!', dijo él con una sonrisa. Beatrice intentó sonreír también." },
+            { id: 13, pages: "16", imageUrl: "page_16.png", imageAlt: "Dinner worry", textEn: "At supper, Beatrice barely touched her food.\n\n'Is everything all right, kiddo?' asked her father.\n\n'I'm worried I'll mess up tonight,' said Beatrice. 'And everyone will be watching.'\n\n'Worry? You don't make mistakes!' he said with a smile.\n\nBeatrice tried to smile too.", textEs: "En la cena, Beatrice apenas probó bocado.\n\n'¿Está todo bien, pequeña?', preguntó su padre.\n\n'Me preocupa fallar esta noche', dijo Beatrice. 'Y todo el mundo estará mirando'.\n\n'¿Preocuparte? ¡Tú no cometes errores!', dijo él con una sonrisa. Beatrice intentó sonreír también." },
             { id: 14, pages: "17", imageUrl: "page_17.png", imageAlt: "Pre-show setup", textEn: "After supper, Beatrice got ready for the talent show.\n\nFirst, she woke Humbert from his nap. \n\nNext, she got the salt shaker from the kitchen table. \n\nFinally, she filled a balloon with water.", textEs: "Tras la cena, se preparó para el show. Despertó a Humbert, tomó el salero y llenó un globo con agua." },
             { id: 15, pages: "18", imageUrl: "page_18.png", imageAlt: "On stage", textEn: "The school auditorium was packed! Beatrice felt her stomach jumping around inside her.", textEs: "¡El auditorio estaba lleno! Beatrice sentía mariposas en el estómago." },
             { id: 16, pages: "19", imageUrl: "page_19.png", imageAlt: "Perfect reputation", textEn: "Beatrice waited for her juggling music to begin. \n\n'That's her! That's the Girl Who Never Makes Mistakes!' said a woman.\n\n'Oh! We know she'll be perfect!' said a man.\n\nWhen the music started, she tossed Humbert into the air.\n\nNext, she added the salt shaker.\n\nAnd finally, the water balloon.", textEs: "'¡Es ella! ¡La chica que nunca comete errores!', dijo una mujer. '¡Sabemos que será perfecta!', dijo un hombre.\n\nCuando empezó la música, lanzó a Humbert, luego el salero y el globo." },
@@ -196,29 +201,42 @@
             { id: 32, pages: "End", imageUrl: "page_1.png", imageAlt: "The End", textEn: "THE END", textEs: "FIN" }
         ];
 
-        // 🛡️ ICONOS SVG MANUALES (Independientes de Lucide) 🛡️
-        const SVGIcons = {
-            book: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>,
-            plus: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>,
-            minus: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>,
-            volume: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>,
-            volumeX: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>,
-            chevronLeft: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>,
-            chevronRight: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        const Icon = ({ name, size = 20, color = 'currentColor', className = "" }) => {
+            const iconRef = useRef(null);
+            useEffect(() => {
+                if (window.lucide && iconRef.current) {
+                    const lucideName = name.toLowerCase().replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+                    iconRef.current.setAttribute('data-lucide', lucideName);
+                    window.lucide.createIcons({
+                        icons: { [lucideName]: window.lucide.icons[lucideName] },
+                        attrs: { stroke: color, width: size, height: size, class: className },
+                        nameAttr: 'data-lucide'
+                    });
+                }
+            }, [name, size, color, className]);
+            return <i ref={iconRef} style={{ display: 'inline-block', width: size, height: size }}></i>;
         };
-
-        const Icon = ({ name, size = 20, color = 'black', className = "" }) => (
-            <div className={`flex items-center justify-center ${className}`} style={{ width: size, height: size, color: color }}>
-                {SVGIcons[name]}
-            </div>
-        );
 
         function App() {
             const [view, setView] = useState('cover');
             const [pageIndex, setPageIndex] = useState(0);
             const [lang, setLang] = useState('en');
             const [speaking, setSpeaking] = useState(false);
-            const [textSize, setTextSize] = useState(1.5);
+            const [turning, setTurning] = useState(false);
+            const [textSize, setTextSize] = useState(window.innerWidth < 500 ? 1.0 : 1.4);
+            const [appReady, setAppReady] = useState(false);
+
+            useEffect(() => {
+                setAppReady(true);
+                const handleResize = () => {
+                    if (window.innerWidth < 500) {
+                        setTextSize(1.0);
+                    }
+                };
+                window.addEventListener('resize', handleResize);
+                return () => window.removeEventListener('resize', handleResize);
+            }, []);
+            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [view, pageIndex, lang, appReady]);
 
             const audioRef = useRef(null);
             const currentStory = storyData[pageIndex];
@@ -227,104 +245,100 @@
                 if (audioRef.current) { audioRef.current.pause(); audioRef.current.currentTime = 0; setSpeaking(false); }
             }, [pageIndex, lang, view]);
 
+            const changePage = (idx) => {
+                if (idx < 0 || idx >= storyData.length) return;
+                setTurning(true);
+                setTimeout(() => { setPageIndex(idx); setTurning(false); }, 300);
+            };
+
             const speak = () => {
                 if (speaking) { if (audioRef.current) audioRef.current.pause(); setSpeaking(false); return; }
                 const idStr = currentStory.id.toString().padStart(2, '0');
                 const audioSrc = `${REPO_URL}audios/audio${idStr}.wav`;
+                if (audioRef.current) audioRef.current.pause();
                 const audio = new Audio(audioSrc);
                 audioRef.current = audio;
                 audio.onended = () => setSpeaking(false);
                 audio.play().then(() => setSpeaking(true)).catch(() => setSpeaking(false));
             };
 
+            const progress = ((pageIndex + 1) / storyData.length) * 100;
+
+            if (!appReady) return <div className="min-h-screen bg-[#1a5d4e] flex items-center justify-center font-bold text-white">Loading...</div>;
+
             if (view === 'cover') {
                 return (
-                    <div className="h-full w-full flex flex-col items-center justify-center p-8 text-center bg-black/30">
-                        <div className="mb-10 shadow-2xl">
-                            <div className="bg-[#fdfaf5] border-4 border-[#d4af37] rounded-sm p-1 shadow-2xl">
-                                <img src={`${REPO_URL}page_1.png`} className="w-44 md:w-64 h-auto" />
-                            </div>
+                    <div className="h-screen w-full flex flex-col items-center justify-center relative overflow-hidden cover-bg font-sans p-4">
+                        <div className="absolute inset-0 z-0 opacity-20">
+                            <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-[#d4af37] rounded-full blur-[120px] animate-pulse"></div>
+                            <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-[#1a5d4e] rounded-full blur-[120px] animate-pulse"></div>
                         </div>
-                        <h1 className="playfair text-4xl font-bold mb-8 italic">
-                            <span className="text-white block text-2xl mb-1 opacity-90">The Girl Who</span>
-                            <span className="text-[#d4af37] text-6xl">NEVER</span><br />
-                            <span className="text-white">Made Mistakes</span>
-                        </h1>
-                        <button onClick={() => setView('reading')} className="bg-[#d4af37] text-black px-12 py-4 rounded-full font-black text-sm tracking-[0.2em] uppercase shadow-2xl active:scale-95 transition-all">Start Reading</button>
+                        <div className="z-10 text-center max-w-2xl flex flex-col items-center">
+                            <div className="floating mb-6 relative group">
+                                <div className="gold-frame rounded-sm p-2 shadow-2xl">
+                                    <img src={`${REPO_URL}page_1.png`} className="relative w-48 md:w-56 h-auto mx-auto rounded-sm cover-shadow" />
+                                </div>
+                            </div>
+                            <div className="mb-6 text-center">
+                                <h1 className="playfair text-4xl md:text-5xl font-bold mb-2 leading-tight">
+                                    <span className="italic text-2xl md:text-3xl font-light opacity-80 block">The Girl Who</span>
+                                    <span className="text-[#d4af37] tracking-wider mx-2">NEVER</span> Made Mistakes
+                                </h1>
+                                <p className="text-lg md:text-xl handwriting opacity-80 tracking-wide">By <span className="text-[#d4af37]">Mark Pett</span> & <span className="text-[#d4af37]">Gary Rubinstein</span></p>
+                            </div>
+                            <button onClick={() => setView('reading')} className="bg-[#d4af37] text-black px-12 py-3.5 rounded-sm font-bold text-sm tracking-[0.2em] uppercase hover:bg-[#b08d2b] shadow-xl">Start Reading</button>
+                            <div className="mt-8 text-[10px] font-bold tracking-[0.4em] uppercase opacity-50">Reading Club / Tiny Kids / February 2026</div>
+                        </div>
                     </div>
                 );
             }
 
-            const progress = ((pageIndex + 1) / storyData.length) * 100;
-
             return (
-                <div className="h-full w-full flex flex-col box-border">
-                    {/* 🔝 HEADER: Fixed & Premium */}
-                    <header className="px-3 pt-3 pb-2 z-50">
-                        <div className="glass rounded-2xl px-3 py-2 flex justify-between items-center shadow-lg">
-                            <div className="flex items-center gap-2" onClick={() => setView('cover')}>
-                                <div className="bg-[#d4af37] w-9 h-9 rounded-xl flex items-center justify-center shadow-inner">
-                                    <Icon name="book" color="black" size={20} />
-                                </div>
-                                <span className="playfair text-xs font-bold text-white whitespace-nowrap">Beatrice Story</span>
+                <div className="h-screen bg-transparent flex flex-col items-center justify-between p-3 md:p-6 relative overflow-hidden">
+                    <div className="w-full max-w-6xl flex justify-between items-center z-20 glass rounded-2xl px-3 md:px-5 py-2 border border-white/10 shadow-2xl">
+                        <div className="flex items-center gap-2 md:gap-3 cursor-pointer group" onClick={() => setView('cover')}>
+                            <div className="bg-[#d4af37] p-1.5 rounded-lg flex items-center justify-center nav-btn-sm"><Icon name="book" size={18} color="black" /></div>
+                            <span className="playfair text-sm md:text-base font-bold group-hover:text-[#d4af37] transition-colors leading-tight nav-title">The Girl Who <span className="text-[#d4af37]">Never</span> Made Mistakes</span>
+                        </div>
+                        <div className="flex gap-1.5 md:gap-3 items-center nav-group">
+                            <button onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="glass-dark px-3 md:px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/10 nav-lang-btn">{lang === 'en' ? 'ENG' : 'ESP'}</button>
+                            <div className="flex items-center gap-1 glass-dark p-0.5 md:p-1 rounded-xl border border-white/5 nav-btn-sm">
+                                <button onClick={() => setTextSize(Math.max(1, textSize - 0.2))} className="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-[#d4af37]"><Icon name="minus" size={14} /></button>
+                                <button onClick={() => setTextSize(Math.min(2.5, textSize + 0.2))} className="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-[#d4af37]"><Icon name="plus" size={14} /></button>
                             </div>
-
-                            <div className="flex gap-2 items-center">
-                                <div className="flex glass-dark p-1 rounded-xl border border-white/5">
-                                    <button onClick={() => setTextSize(Math.max(1, textSize - 0.2))} className="w-8 h-8 flex items-center justify-center rounded-lg text-[#d4af37] active:bg-white/20"><Icon name="minus" size={16} color="currentColor" /></button>
-                                    <button onClick={() => setTextSize(Math.min(2.5, textSize + 0.2))} className="w-8 h-8 flex items-center justify-center rounded-lg text-[#d4af37] active:bg-white/20"><Icon name="plus" size={16} color="currentColor" /></button>
+                            <button onClick={() => lang === 'en' && speak()} className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full nav-btn-sm ${lang === 'es' ? 'bg-gray-500 opacity-50 cursor-not-allowed' : speaking ? 'bg-red-500 animate-pulse' : 'bg-[#d4af37]'} text-black shadow-lg shadow-black/20`}><Icon name={speaking ? "volume-x" : "volume-2"} size={18} color="black" /></button>
+                        </div>
+                    </div>
+                    <div className="book-container flex-grow w-full flex items-center justify-center relative py-4">
+                        <div className={`book-card ${turning ? 'page-turn-anim' : ''} max-h-full shadow-2xl overflow-hidden`}>
+                            <div className="paper-texture absolute inset-0 z-0"></div>
+                            <div className="w-1/2 relative overflow-hidden border-r border-black/5 bg-[#f5f5f5] flex items-center justify-center">
+                                <img src={`${REPO_URL}${currentStory.imageUrl}`} alt={currentStory.imageAlt} className="w-full h-full object-contain p-2 md:p-6" />
+                            </div>
+                            <div className="w-1/2 p-8 md:p-12 flex flex-col justify-center relative bg-white/20">
+                                <p className="text-stone-800 font-serif overflow-y-auto custom-scroll pr-4 max-h-full w-full whitespace-pre-line pb-12" style={{ fontSize: `${textSize}rem`, lineHeight: '1.35' }}>{lang === 'es' ? currentStory.textEs : currentStory.textEn}</p>
+                                <div className="absolute bottom-6 left-12 right-12 border-t border-black/5 pt-4 flex justify-between items-center opacity-30">
+                                    <span className="text-[12px] font-bold tracking-widest text-[#1a5d4e]">Tiny Kids / Reading Club</span>
+                                    <span className="handwriting text-base text-black">February 2026</span>
                                 </div>
-                                <button onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="glass-dark px-3 h-8 rounded-full text-[9px] font-black border border-white/10 flex items-center gap-1">
-                                    <span className="opacity-80">{lang === 'en' ? '🇺🇸' : '🇪🇸'}</span> {lang.toUpperCase()}
-                                </button>
-                                <button onClick={() => lang === 'en' && speak()} className={`w-9 h-9 flex items-center justify-center rounded-full shadow-lg ${lang === 'es' ? 'opacity-20 grayscale bg-gray-600' : speaking ? 'bg-red-500 animate-pulse' : 'bg-[#d4af37]'} text-black`}>
-                                    <Icon name={speaking ? "volumeX" : "volume"} color="black" size={18} />
-                                </button>
                             </div>
                         </div>
-                    </header>
-
-                    {/* 📖 CONTENT: Balanced proportions */}
-                    <main className="book-container">
-                        <div key={pageIndex} className="book-card fade-in shadow-2xl">
-                            <div className="paper-texture"></div>
-                            <div className="card-half bg-white flex items-center justify-center p-2 relative">
-                                <img src={`${REPO_URL}${currentStory.imageUrl}`} className="w-full h-full object-contain z-10" />
-                            </div>
-                            <div className="card-half p-6 md:p-10 flex flex-col justify-start relative bg-white/5 overflow-hidden z-20">
-                                <p className="text-stone-800 font-serif overflow-y-auto custom-scroll pr-1 whitespace-pre-line" style={{ fontSize: `${textSize}rem`, lineHeight: '1.4' }}>
-                                    {lang === 'es' ? currentStory.textEs : currentStory.textEn}
-                                </p>
-                            </div>
-                        </div>
-                    </main>
-
-                    {/* 🔙 FOOTER: Control Area */}
-                    <footer className="px-4 py-3 pb-safe z-50">
-                        <div className="max-w-md mx-auto flex items-center gap-3">
-                            <button disabled={pageIndex === 0} onClick={() => setPageIndex(pageIndex - 1)} className="bg-black/40 w-11 h-11 rounded-full flex items-center justify-center border border-white/10 active:scale-90 disabled:opacity-5 transition-all">
-                                <Icon name="chevronLeft" color="white" size={24} />
-                            </button>
-
-                            <div className="flex-grow">
-                                <div className="flex justify-between items-center text-[10px] font-black tracking-widest mb-1 px-1">
-                                    <div className="flex items-center gap-1 text-[#d4af37]">
-                                        <span className="opacity-60 text-white">SCENE</span>
-                                        <input type="number" value={pageIndex + 1} readOnly className="w-7 bg-transparent border-b border-[#d4af37] text-center text-[#d4af37]" />
-                                        <span className="opacity-30 text-white">/32</span>
-                                    </div>
-                                    <span className="opacity-50 text-white">{Math.round(progress)}%</span>
+                    </div>
+                    <div className="w-full max-w-4xl flex items-center gap-6 mb-2">
+                        <button disabled={pageIndex === 0} onClick={() => changePage(pageIndex - 1)} className="bg-white/10 p-3 rounded-full border border-white/5 disabled:opacity-10"><Icon name="chevron-left" size={24} /></button>
+                        <div className="flex-grow">
+                            <div className="flex justify-between items-end mb-1.5 px-2 text-[10px] font-bold uppercase tracking-[0.2em] opacity-60">
+                                <div className="flex items-center gap-1">
+                                    <span>Scene</span>
+                                    <input type="number" min="1" max={storyData.length} value={pageIndex + 1} onChange={(e) => { const val = parseInt(e.target.value); if (!isNaN(val) && val >= 1 && val <= storyData.length) changePage(val - 1); }} className="w-10 bg-transparent border-b border-white/20 text-center text-[#d4af37]" />
+                                    <span>/ {storyData.length}</span>
                                 </div>
-                                <div className="h-1.5 bg-black/30 rounded-full border border-white/5 overflow-hidden">
-                                    <div className="h-full bg-gradient-to-r from-[#d4af37] to-[#f59e0b] shadow-[0_0_10px_#d4af37]" style={{ width: `${progress}%` }}></div>
-                                </div>
+                                <span>{Math.round(progress)}%</span>
                             </div>
-
-                            <button disabled={pageIndex === storyData.length - 1} onClick={() => setPageIndex(pageIndex + 1)} className="bg-[#d4af37] w-11 h-11 rounded-full flex items-center justify-center shadow-lg active:scale-90 disabled:opacity-20 transition-all">
-                                <Icon name="chevronRight" color="black" size={24} />
-                            </button>
+                            <div className="h-1.5 bg-white/10 rounded-full border border-white/5 overflow-hidden"><div className="h-full bg-gradient-to-r from-[#d4af37] to-[#e6c867] transition-all duration-1000 shadow-[0_0_10px_#d4af37]" style={{ width: `${progress}%` }}></div></div>
                         </div>
-                    </footer>
+                        <button disabled={pageIndex === storyData.length - 1} onClick={() => changePage(pageIndex + 1)} className="bg-[#d4af37] p-3 rounded-full text-black shadow-lg shadow-[#d4af37]/20"><Icon name="chevron-right" size={24} /></button>
+                    </div>
                 </div>
             );
         }
