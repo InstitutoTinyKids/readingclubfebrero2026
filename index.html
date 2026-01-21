@@ -208,11 +208,36 @@
             }
         }
 
+        /* Optimization for landscape orientations with limited height (Tablets/Laptops) */
+        @media (orientation: landscape) and (max-height: 850px) {
+            .book-card {
+                height: 65vh !important;
+                height: 65dvh !important;
+                min-height: 380px !important;
+                max-width: 95% !important;
+            }
+
+            .card-text-container {
+                padding: 1.5rem !important;
+            }
+
+            .card-image-container {
+                padding: 1rem !important;
+            }
+
+            .book-container {
+                padding: 0.25rem !important;
+                margin: 0.5rem 0 !important;
+                flex-grow: 1;
+            }
+        }
+
         @media (orientation: portrait) {
             .book-card {
                 flex-direction: column !important;
-                height: 88vh !important;
-                min-height: 600px !important;
+                height: 85vh !important;
+                height: 85dvh !important;
+                min-height: 550px !important;
                 border-radius: 12px;
                 width: 98% !important;
             }
@@ -232,7 +257,7 @@
             }
 
             .card-text-container {
-                padding: 1.5rem !important;
+                padding: 1.25rem !important;
             }
 
             .book-footer {
@@ -325,15 +350,17 @@
             const [lang, setLang] = useState('en');
             const [speaking, setSpeaking] = useState(false);
             const [turning, setTurning] = useState(false);
-            const [textSize, setTextSize] = useState(window.innerWidth < 500 ? 1.0 : 1.4);
+            const [textSize, setTextSize] = useState(window.innerWidth < 500 || window.innerHeight < 600 ? 1.1 : 1.4);
             const [appReady, setAppReady] = useState(false);
             const [zoomImage, setZoomImage] = useState(null);
 
             useEffect(() => {
                 setAppReady(true);
                 const handleResize = () => {
-                    if (window.innerWidth < 500) {
-                        setTextSize(1.0);
+                    if (window.innerWidth < 500 || window.innerHeight < 600) {
+                        setTextSize(1.1);
+                    } else {
+                        setTextSize(1.4);
                     }
                 };
                 window.addEventListener('resize', handleResize);
@@ -370,7 +397,7 @@
 
             if (view === 'cover') {
                 return (
-                    <div className="h-screen w-full flex flex-col items-center justify-start pt-16 md:justify-center md:pt-0 relative overflow-hidden cover-bg font-sans p-4">
+                    <div className="min-h-screen min-h-[100dvh] w-full flex flex-col items-center justify-start pt-16 md:justify-center md:pt-0 relative overflow-y-auto cover-bg font-sans p-4">
                         <div className="absolute inset-0 z-0 opacity-20">
                             <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-[#d4af37] rounded-full blur-[120px] animate-pulse"></div>
                             <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-[#1a5d4e] rounded-full blur-[120px] animate-pulse"></div>
@@ -396,7 +423,7 @@
             }
 
             return (
-                <div className="min-h-screen bg-transparent flex flex-col items-center justify-between p-3 md:p-6 relative">
+                <div className="min-h-screen min-h-[100dvh] bg-transparent flex flex-col items-center justify-between p-3 md:p-6 relative overflow-y-auto overflow-x-hidden">
                     <div className="w-full max-w-6xl flex justify-between items-center z-20 glass rounded-2xl px-3 md:px-5 py-2 border border-white/10 shadow-2xl">
                         <div className="flex items-center gap-2 md:gap-3 cursor-pointer group" onClick={() => setView('cover')}>
                             <div className="bg-[#d4af37] p-1.5 rounded-lg flex items-center justify-center nav-btn-sm"><Icon name="book" size={18} color="black" /></div>
