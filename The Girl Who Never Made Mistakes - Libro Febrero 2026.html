@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Girl Who Never Made Mistakes | Premium Edition</title>
+
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;600;700&family=Playfair+Display:wght@700;800&family=Outfit:wght@400;600&display=swap');
+
+        :root {
+            --primary: #1a5d4e;
+            --accent: #d4af37;
+            --bg-paper: #fdfaf5;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: url('bg.png') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .handwriting {
+            font-family: 'Patrick Hand', cursive;
+        }
+
+        .playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Glassmorphism Classes */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Book Layout */
+        .book-container {
+            perspective: 2000px;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .book-card {
+            background: var(--bg-paper);
+            border-radius: 4px 24px 24px 4px;
+            box-shadow:
+                -10px 10px 30px rgba(0, 0, 0, 0.5),
+                inset 20px 0 30px -10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            width: 100%;
+            max-width: 1100px;
+            height: 62vh;
+            /* Adjusted for zero-scroll */
+            min-height: 400px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Spine shadow */
+        .book-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 30px;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.05) 50%, transparent 100%);
+            z-index: 10;
+            border-radius: 4px 0 0 4px;
+        }
+
+        /* Paper texture */
+        .paper-texture {
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Floating elements */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        /* Custom scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 10px;
+        }
+
+        /* Page transition */
+        @keyframes pageTurn {
+            0% {
+                transform: rotateY(0);
+            }
+
+            50% {
+                transform: rotateY(-3deg) scale(1.02);
+            }
+
+            100% {
+                transform: rotateY(0);
+            }
+        }
+
+        /* Premium Background for Cover */
+        .cover-bg {
+            background: transparent;
+            position: relative;
+        }
+
+        .cover-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        /* Gold Decorative Frame */
+        .gold-frame {
+            border: 2px solid #d4af37;
+            padding: 10px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .gold-frame::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            pointer-events: none;
+        }
+
+        /* Title Typography */
+        .title-reveal {
+            overflow: hidden;
+        }
+
+        .title-reveal span {
+            display: inline-block;
+            transform: translateY(100%);
+            animation: revealUp 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes revealUp {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        /* Floating Shadow for Cover Image */
+        .cover-shadow {
+            box-shadow:
+                0 30px 60px -12px rgba(0, 0, 0, 0.5),
+                0 18px 36px -18px rgba(0, 0, 0, 0.5),
+                0 -12px 36px -8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Optimization for landscape orientations with limited height (Tablets/Laptops) */
+        @media (orientation: landscape) and (max-height: 850px) {
+            .book-card {
+                height: 65vh !important;
+                height: 65dvh !important;
+                min-height: 380px !important;
+                max-width: 95% !important;
+            }
+
+            .book-container {
+                padding: 0.25rem !important;
+                margin: 0.5rem 0 !important;
+                flex-grow: 1;
+            }
+        }
+
+        @media (orientation: portrait) {
+            .book-card {
+                flex-direction: column !important;
+                height: 82vh !important;
+                height: 82dvh !important;
+                min-height: 520px !important;
+                width: 98% !important;
+                border-radius: 12px;
+            }
+
+            .book-card>div {
+                width: 100% !important;
+                height: 50% !important;
+            }
+
+            .book-card>div:first-child {
+                border-right: none !important;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            }
+
+            .book-container {
+                padding: 0.5rem !important;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">const {
+            useState,
+            useEffect,
+            useRef
+        }
+
+            = React;
+
+        // --- STORY DATA (Mapping to Extracted PDF Pages) ---
+        const storyData = [{
+            id: 1, pages: "4", imageUrl: "images_extracted/page_4.png", imageAlt: "Beatrice in bed", textEn: "For Beatrice Bottomwell, Friday began like any other day.", textEs: "Para Beatrice Bottomwell, el viernes comenzó como cualquier otro día.", audioEn: "audio01.wav", audioEs: "audio01_es.wav"
+        }
+
+            ,
+        {
+            id: 2, pages: "5", imageUrl: "images_extracted/page_5.png", imageAlt: "Matching socks", textEn: "She matched her socks. And, of course, she put her shoes on their proper feet.", textEs: "Emparejó sus calcetines. Y, por supuesto, se puso los zapatos en los pies correctos.", audioEn: "audio02.wav", audioEs: "audio02_es.wav"
+        }
+
+            ,
+        {
+            id: 3, pages: "6", imageUrl: "images_extracted/page_6.png", imageAlt: "Hamster and sandwich", textEn: "She remembered to feed her hamster, Humbert, his favorite food, broccoli.\n\nAnd when she made a sandwich for her brother Carl's lunch, she used exactly the same amount of peanut butter as jelly.", textEs: "Se acordó de alimentar a su hámster, Humbert, con su comida favorita: brócoli.\n\nY cuando le preparó un sándwich a su hermano Carl para el almuerzo, usó exactamente la misma cantidad de mantequilla de maní que de mermelada.", audioEn: "audio03.wav", audioEs: "audio03_es.wav"
+        }
+
+            ,
+        {
+            id: 4, pages: "7", imageUrl: "images_extracted/page_7.png", imageAlt: "Greeting fans", textEn: "When she stepped outside to greet her fans, she didn't forget to say 'good morning' and 'thank you.'", textEs: "Cuando salió a saludar a sus fans, no olvidó decir 'buenos días' y 'gracias'.", audioEn: "audio04.wav", audioEs: "audio04_es.wav"
+        }
+
+            ,
+        {
+            id: 5, pages: "8", imageUrl: "images_extracted/page_8.png", imageAlt: "Talent show prep", textEn: "They asked if she made her bed. She had.\n\nThey asked if she forgot to do her math homework. Nope.\n\n'What about tonight's talent show?' they asked. 'I'm ready!' said Beatrice with a smile. After all, her juggling act had won three years in a row.", textEs: "¿Hiciste la cama? Sí. ¿Tarea de matemáticas? No.\n\n'¿Y el show de talentos?', preguntaron. '¡Lista!', dijo Beatrice. Su acto de malabares había ganado tres años seguidos.", audioEn: "audio05.wav", audioEs: "audio05_es.wav"
+        }
+
+            ,
+        {
+            id: 6, pages: "9", imageUrl: "images_extracted/page_9.png", imageAlt: "The girl who never makes mistakes", textEn: "Most people in town didn't even know Beatrice's name. \n\nThey just called her 'the Girl Who Never Makes Mistakes,' because for as long as anyone could remember, she never did.", textEs: "Mucha gente ni sabía su nombre. La llamaban 'la Chica Que Nunca Comete Errores', porque nunca lo había hecho.", audioEn: "audio06.wav", audioEs: "audio06_es.wav"
+        }
+
+            ,
+        {
+            id: 7, pages: "10", imageUrl: "images_extracted/page_10.png", imageAlt: "Carl's mistakes", textEn: "Unlike Beatrice, Carl made lots of mistakes.\n\nHe ate his crayons and drew with his green beans. \n\nHe danced with his hands and played the piano with his feet. \n\nCarl loved to make mistakes!", textEs: "A diferencia de Beatrice, Carl cometía muchos errores. Comía crayones y bailaba con las manos. ¡A Carl le encantaba cometer errores!", audioEn: "audio07.wav", audioEs: "audio07_es.wav"
+        }
+
+            ,
+        {
+            id: 8, pages: "11", imageUrl: "images_extracted/page_11.png", imageAlt: "Cooking team eggs", textEn: "At school, Beatrice was on a cooking team with her two best friends, Millie and Sarah. To make their giant rhubarb muffins, they needed four eggs.\n\nBeatrice went to the refrigerator and carefully chose the biggest, eggiest eggs she could find.", textEs: "En la escuela, Beatrice estaba en un equipo de cocina. Necesitaban cuatro huevos para los muffins de ruibarbo. Beatrice fue al refrigerador y eligió los mejores huevos.", audioEn: "audio08.wav", audioEs: "audio08_es.wav"
+        }
+
+            ,
+        {
+            id: 9, pages: "12", imageUrl: "images_extracted/page_12.png", imageAlt: "The slip", textEn: "But on the way back, her legs slipped out from under her. \n\nThe eggs went flying.\n\nBeatrice was about to make her first mistake...", textEs: "Pero al volver, sus piernas resbalaron. ¡Los huevos salieron volando!\n\nBeatrice estaba a punto de cometer su primer error...", audioEn: "audio09.wav", audioEs: "audio09_es.wav"
+        }
+
+            ,
+        {
+            id: 10, pages: "13", imageUrl: "images_extracted/page_13.png", imageAlt: "The catch", textEn: "But she didn't! 'That was close!' thought Beatrice.\n\n'Sorry, Beatrice... I dropped a piece of rhubarb.'\n\n'-on't -ention it, -illie.'", textEs: "¡Pero no lo hizo! '¡Estuvo cerca!', pensó Beatrice.\n\n'Perdona, Beatrice... se me cayó un trozo de ruibarbo'.\n\n'No tiene importancia, Millie'.", audioEn: "audio10.wav", audioEs: "audio10_es.wav"
+        }
+
+            ,
+        {
+            id: 11, pages: "14", imageUrl: "images_extracted/page_14.png", imageAlt: "Thinking about it", textEn: "For the rest of the school day, Beatrice could not stop thinking about her Almost Mistake.", textEs: "El resto del día escolar, Beatrice no pudo dejar de pensar en su 'Casi Error'.", audioEn: "audio11.wav", audioEs: "audio11_es.wav"
+        }
+
+            ,
+        {
+            id: 12, pages: "15", imageUrl: "images_extracted/page_15.png", imageAlt: "Ice skating", textEn: "On her way home from school, Beatrice watched Millie and Sarah ice-skating in the park.\n\n'Come join us!' said Millie. 'It's fun!' said Sarah.\n\nBeatrice watched them slip and slide on the frozen pond. Millie and Sarah laughed as they wobbled on the ice.\n\n'No, thanks,' said Beatrice.", textEs: "De camino a casa desde la escuela, Beatrice vio a Millie y Sarah patinando en el parque.\n\n'¡Vengan con nosotras!', dijo Millie. '¡Es divertido!', dijo Sarah.\n\nBeatrice las vio resbalar y deslizarse en el estanque congelado. Millie y Sarah se reían mientras se tambaleaban en el hielo.\n\n'No, gracias', dijo Beatrice.", audioEn: "audio12.wav", audioEs: "audio12_es.wav"
+        }
+
+            ,
+        {
+            id: 13, pages: "16", imageUrl: "images_extracted/page_16.png", imageAlt: "Dinner worry", textEn: "At supper, Beatrice barely touched her food.\n\n'Is everything all right, kiddo?' asked her father.\n\n'I'm worried I'll mess up tonight,' said Beatrice. 'And everyone will be watching.'\n\n'Worry? You don't make mistakes!' he said with a smile.\n\nBeatrice tried to smile too.", textEs: "En la cena, Beatrice apenas probó bocado.\n\n'¿Está todo bien, pequeña?', preguntó su padre.\n\n'Me preocupa fallar esta noche', dijo Beatrice. 'Y todo el mundo estará mirando'.\n\n'¿Preocuparte? ¡Tú no cometes errores!', dijo él con una sonrisa. Beatrice intentó sonreír también.", audioEn: "audio13.wav", audioEs: "audio13_es.wav"
+        }
+
+            ,
+        {
+            id: 14, pages: "17", imageUrl: "images_extracted/page_17.png", imageAlt: "Pre-show setup", textEn: "After supper, Beatrice got ready for the talent show.\n\nFirst, she woke Humbert from his nap. \n\nNext, she got the salt shaker from the kitchen table. \n\nFinally, she filled a balloon with water.", textEs: "Tras la cena, se preparó para el show. Despertó a Humbert, tomó el salero y llenó un globo con agua.", audioEn: "audio14.wav", audioEs: "audio14_es.wav"
+        }
+
+            ,
+        {
+            id: 15, pages: "18", imageUrl: "images_extracted/page_18.png", imageAlt: "On stage", textEn: "The school auditorium was packed! Beatrice felt her stomach jumping around inside her.", textEs: "¡El auditorio estaba lleno! Beatrice sentía mariposas en el estómago.", audioEn: "audio15.wav", audioEs: "audio15_es.wav"
+        }
+
+            ,
+        {
+            id: 16, pages: "19", imageUrl: "images_extracted/page_19.png", imageAlt: "Perfect reputation", textEn: "Beatrice waited for her juggling music to begin. \n\n'That's her! That's the Girl Who Never Makes Mistakes!' said a woman.\n\n'Oh! We know she'll be perfect!' said a man.\n\nWhen the music started, she tossed Humbert into the air.\n\nNext, she added the salt shaker.\n\nAnd finally, the water balloon.", textEs: "'¡Es ella! ¡La chica que nunca comete errores!', dijo una mujer. '¡Sabemos que será perfecta!', dijo un hombre.\n\nCuando empezó la música, lanzó a Humbert, luego el salero y el globo.", audioEn: "audio16.wav", audioEs: "audio16_es.wav"
+        }
+
+            ,
+        {
+            id: 17, pages: "20", imageUrl: "images_extracted/page_20.png", imageAlt: "Something odd", textEn: "Beatrice didn't miss a beat! The crowd clapped with delight.\n\nBut Beatrice noticed something odd about the salt shaker...\n\nThe specks falling out of it were not white!", textEs: "¡No perdió el ritmo! La multitud aplaudía. Pero Beatrice notó algo raro en el salero... ¡Las motas no eran blancas!", audioEn: "audio17.wav", audioEs: "audio17_es.wav"
+        }
+
+            ,
+        {
+            id: 18, pages: "21", imageUrl: "images_extracted/page_21.png", imageAlt: "AAHHCH", textEn: "AAHHCH...", textEs: "¡¡¡AAHHCH!!!", audioEn: "audio18.wav", audioEs: "audio18_es.wav"
+        }
+
+            ,
+        {
+            id: 19, pages: "22", imageUrl: "images_extracted/page_22.png", imageAlt: "OOO!!!", textEn: "OOO!!!", textEs: "¡¡¡OOO!!!", audioEn: "audio19.wav", audioEs: "audio19_es.wav"
+        }
+
+            ,
+        {
+            id: 20, pages: "23", imageUrl: "images_extracted/page_23.png", imageAlt: "KABLOOIE", textEn: "Humbert was so surprised by his sneeze that he grabbed the water balloon with his claws.\n\nKABLOOIE!", textEs: "Humbert se sorprendió tanto por su estornudo que agarró el globo de agua con sus garras.\n\n¡KABLOOIE!", audioEn: "audio20.wav", audioEs: "audio20_es.wav"
+        }
+
+            ,
+        {
+            id: 21, pages: "24", imageUrl: "images_extracted/page_24.png", imageAlt: "Mistake aftermath", textEn: "Humbert, pieces of water balloon, and the pepper rained down on top of Beatrice.\n\nFor the first time in as long as anyone could remember, Beatrice made a mistake.\n\nAnd it was a big one!", textEs: "Humbert, trozos de globo y pimienta cayeron sobre ella. ¡Por primera vez, Beatrice cometió un error! ¡Y uno grande!", audioEn: "audio21.wav", audioEs: "audio21_es.wav"
+        }
+
+            ,
+        {
+            id: 22, pages: "25", imageUrl: "images_extracted/page_25.png", imageAlt: "Music stops", textEn: "The music stopped.\n\nBeatrice didn't know what to do. Cry?\n\nRun off the stage?", textEs: "La música se detuvo. Beatrice no sabía qué hacer. ¿Llorar? ¿Huir del escenario?", audioEn: "audio22.wav", audioEs: "audio22_es.wav"
+        }
+
+            ,
+        {
+            id: 23, pages: "26", imageUrl: "images_extracted/page_26.png", imageAlt: "Stunned crowd", textEn: "The crowd sat stunned. They couldn't believe that the Girl Who Never Makes Mistakes made a mistake!", textEs: "La multitud estaba atónita. ¡No podían creer que ella cometiera un error!", audioEn: "audio23.wav", audioEs: "audio23_es.wav"
+        }
+
+            ,
+        {
+            id: 24, pages: "27", imageUrl: "images_extracted/page_27.png", imageAlt: "Giggle", textEn: "Beatrice looked up at Humbert.\n\nHe looked back at her.\n\nHis hamster fur was soaked and speckled with bits of balloon.\n\nBeatrice let out a giggle. The giggle grew into a chuckle. And the chuckle became a laugh.", textEs: "Beatrice miró a Humbert. Estaba empapado con trozos de globo. Soltó una risita, que se convirtió en carcajada y luego en risa.", audioEn: "audio24.wav", audioEs: "audio24_es.wav"
+        }
+
+            ,
+        {
+            id: 25, pages: "28", imageUrl: "images_extracted/page_28.png", imageAlt: "Shared laughter", textEn: "The people in the crowd looked at each other and then back at Beatrice. They began to giggle. Then chuckle. Then-finally-roar with laughter.\n\nBeatrice and the audience laughed until they couldn't remember why they were laughing.", textEs: "La gente se miró y luego miró a Beatrice. Empezaron a reír. Al final, todos rugieron de risa hasta olvidar por qué se reían.", audioEn: "audio25.wav", audioEs: "audio25_es.wav"
+        }
+
+            ,
+        {
+            id: 26, pages: "29", imageUrl: "images_extracted/page_29.png", imageAlt: "Peaceful sleep", textEn: "That night, Beatrice slept better than she ever had!", textEs: "¡Esa noche, Beatrice durmió mejor que nunca!", audioEn: "audio26.wav", audioEs: "audio26_es.wav"
+        }
+
+            ,
+        {
+            id: 27, pages: "30", imageUrl: "images_extracted/page_30.png", imageAlt: "Funny socks", textEn: "In the morning, no fans greeted Beatrice.\n\nWhen she got dressed, Beatrice for no reason at all-put a polka dot sock on one foot and a plaid sock on the other.", textEs: "A la mañana no había admiradores. Al vestirse, se puso un calcetín de lunares y otro de cuadros.", audioEn: "audio27.wav", audioEs: "audio27_es.wav"
+        }
+
+            ,
+        {
+            id: 28, pages: "31", imageUrl: "images_extracted/page_31.png", imageAlt: "Inside out sandwich", textEn: "Beatrice and Carl made sandwiches. This time, they put the peanut butter and jelly on the outside. They called it an Inside Out PB & J! \n\nLunch was messy and delicious!", textEs: "Beatrice y Carl hicieron sándwiches con los ingredientes por fuera. ¡Fue un almuerzo desordenado y rico!", audioEn: "audio28.wav", audioEs: "audio28_es.wav"
+        }
+
+            ,
+        {
+            id: 29, pages: "32", imageUrl: "images_extracted/page_32.png", imageAlt: "Skating fun", textEn: "Later, Beatrice found Millie and Sarah skating in the park. \n\nThey fell a lot. And laughed!", textEs: "Luego patinó con sus amigas. Se cayeron mucho. ¡Y se rieron!", audioEn: "audio29.wav", audioEs: "audio29_es.wav"
+        }
+
+            ,
+        {
+            id: 30, pages: "33", imageUrl: "images_extracted/page_33.png", imageAlt: "Just Beatrice", textEn: "Now, people no longer call her the Girl Who Never Makes Mistakes. \n\nThey just call her Beatrice.", textEs: "Ahora ya no la llaman la Chica Que Nunca Comete Errores. Simplemente la llaman Beatrice.", audioEn: "audio30.wav", audioEs: "audio30_es.wav"
+        }
+
+            ,
+        {
+            id: 31, pages: "34", imageUrl: "images_extracted/page_34.png", imageAlt: "Epilogue", textEn: "Beatrice Bottomwell has NEVER (not once!) made a mistake...", textEs: "Beatrice Bottomwell NUNCA (¡ni una sola vez!) ha cometido un error...", audioEn: "audio31.wav", audioEs: "audio31_es.wav"
+        }
+
+            ,
+        {
+            id: 32, pages: "End", imageUrl: "images_extracted/page_1.png", imageAlt: "The End", textEn: "THE END", textEs: "FIN", audioEn: "audio32.wav", audioEs: "audio32_es.wav"
+        }
+
+        ];
+
+        // --- ICONS (Reliable Lucide Integration for React) ---
+        const Icon = ({
+            name, size = 20, color = 'currentColor', className = ""
+
+        }) => {
+            const iconRef = useRef(null);
+
+            useEffect(() => {
+                if (window.lucide && iconRef.current) {
+                    // Lucide uses kebab-case for the attribute
+                    const lucideName = name.toLowerCase().replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+                    iconRef.current.setAttribute('data-lucide', lucideName);
+
+                    window.lucide.createIcons({
+                        icons: {
+                            [lucideName]: window.lucide.icons[lucideName]
+                        }
+
+                        ,
+                        attrs: {
+                            stroke: color,
+                            width: size,
+                            height: size,
+                            class: className
+                        }
+
+                        ,
+                        nameAttr: 'data-lucide'
+                    });
+                }
+            }
+
+                , [name, size, color, className]);
+
+            return <i ref={
+                iconRef
+            }
+
+                style={
+                    {
+                        display: 'inline-block', width: size, height: size
+                    }
+                }
+
+            ></i>;
+        }
+
+            ;
+
+        function App() {
+            const [view,
+                setView] = useState('cover'); // 'cover' or 'reading'
+            const [pageIndex,
+                setPageIndex] = useState(0);
+            const [lang,
+                setLang] = useState('en');
+            const [speaking,
+                setSpeaking] = useState(false);
+            const [turning,
+                setTurning] = useState(false);
+            const [textSize,
+                setTextSize] = useState(window.innerWidth < 500 || window.innerHeight < 600 ? 1.1 : 1.4);
+            const [appReady,
+                setAppReady] = useState(false);
+
+            useEffect(() => {
+                setAppReady(true);
+
+                const handleResize = () => {
+                    if (window.innerWidth < 500 || window.innerHeight < 600) {
+                        setTextSize(1.1);
+                    }
+
+                    else {
+                        setTextSize(1.4);
+                    }
+                }
+
+                    ;
+                window.addEventListener('resize', handleResize);
+                return () => window.removeEventListener('resize', handleResize);
+            }
+
+                , []);
+
+            // Re-run lucide on every major state change to be safe
+            useEffect(() => {
+                if (window.lucide) window.lucide.createIcons();
+            }
+
+                , [view, pageIndex, lang, appReady]);
+
+            const audioRef = useRef(null);
+            const currentStory = storyData[pageIndex];
+
+            // Stop audio on page change or language toggle
+            useEffect(() => {
+                if (audioRef.current) {
+                    audioRef.current.pause();
+                    audioRef.current.currentTime = 0;
+                    setSpeaking(false);
+                }
+            }
+
+                , [pageIndex, lang, view]);
+
+            // Handle Page Turns
+            const changePage = (idx) => {
+                if (idx < 0 || idx >= storyData.length) return;
+                setTurning(true);
+
+                setTimeout(() => {
+                    setPageIndex(idx);
+                    setTurning(false);
+                }
+
+                    , 300);
+            }
+
+                ;
+
+            // Audio Playback (Using Local AI Studio Files)
+            const speak = () => {
+                if (speaking) {
+                    if (audioRef.current) {
+                        audioRef.current.pause();
+                        audioRef.current.currentTime = 0;
+                    }
+
+                    setSpeaking(false);
+                    return;
+                }
+
+                // Dynamic Audio Path Construction (audios/audio01.wav, etc.)
+                const idStr = currentStory.id.toString().padStart(2, '0');
+
+                const audioSrc = lang === 'es' ? `audios/audio$ {
+                    idStr
+                }
+
+                _es.wav` : `audios/audio$ {
+                    idStr
+                }
+
+                .wav`;
+
+                // Safety: Stop any existing audio before starting new one
+                if (audioRef.current) {
+                    audioRef.current.pause();
+                }
+
+                const audio = new Audio(audioSrc);
+                audioRef.current = audio;
+
+                audio.onended = () => setSpeaking(false);
+
+                audio.onerror = () => {
+                    console.warn("Audio file not found:", audioSrc, ". Check if file exists in the folder.");
+                    setSpeaking(false);
+                }
+
+                    ;
+
+                audio.play().catch(err => {
+                    console.error("Playback failed. This usually happens if the user hasn't interacted with the page yet.", err);
+                    setSpeaking(false);
+                });
+
+                setSpeaking(true);
+            }
+
+                ;
+
+            const progress = ((pageIndex + 1) / storyData.length) * 100;
+
+            if (!appReady) return <div className="min-h-screen bg-[#1a5d4e] flex items-center justify-center font-bold text-white">Loading...</div>;
+
+            if (view === 'cover') {
+                return (<div className="min-h-screen min-h-[100dvh] w-full flex flex-col items-center justify-center relative overflow-y-auto cover-bg font-sans p-4" > {
+                    /* Background Particles/Texture */
+                }
+
+                    <div className="absolute inset-0 z-0 opacity-20" > <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-[#d4af37] rounded-full blur-[120px] animate-pulse" ></div> <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-[#1a5d4e] rounded-full blur-[120px] animate-pulse" ></div> </div> <div className="z-10 text-center max-w-2xl flex flex-col items-center" > {
+                        /* Decorative Badge */
+                    }
+
+                        <div className="mb-4 opacity-0 animate-[fade-in_1s_ease-out_forwards] border-y border-[#d4af37]/20 py-1.5 px-4" > <span className="text-[#d4af37] text-[10px] font-bold tracking-[0.4em] uppercase" >Premium Interactive Reader</span> </div> {
+                            /* Floating Book Hero (More Compact) */
+                        }
+
+                        <div className="floating mb-6 relative group" > <div className="absolute -inset-3 bg-[#d4af37]/10 rounded-xl blur-lg" ></div> <div className="gold-frame rounded-sm p-2 shadow-2xl" > <img src="images_extracted/page_1.png"
+                            className="relative w-48 md:w-56 h-auto mx-auto rounded-sm cover-shadow transition-transform duration-700"
+
+                            onError={
+                                (e) => e.target.src = 'https://via.placeholder.com/400x300?text=Cover+Image'
+                            }
+
+                        /> </div> </div> {
+                            /* Refined Typography (More Compact) */
+                        }
+
+                        <div className="mb-6 text-center" > <h1 className="playfair text-4xl md:text-5xl font-bold mb-2 leading-tight title-reveal space-y-1" > <span className="italic text-2xl md:text-3xl font-light opacity-80" >The Girl Who</span> <span className="text-[#d4af37] tracking-wider mx-2" >NEVER</span> <span className="text-3xl md:text-4xl" >Made Mistakes</span> </h1> <div className="h-0.5 w-16 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mx-auto mb-3" ></div> <p className="text-lg md:text-xl handwriting opacity-80 tracking-wide" > By <span className="text-[#d4af37]" >Mark Pett</span> & <span className="text-[#d4af37]" >Gary Rubinstein</span> </p> </div> {
+                            /* Premium Button */
+                        }
+
+                        <button onClick={
+                            () => setView('reading')
+                        }
+
+                            className="group relative bg-[#d4af37] text-black px-12 py-3.5 rounded-sm font-bold text-sm tracking-[0.2em] uppercase transition-all duration-300 hover:bg-[#b08d2b] shadow-xl hover:shadow-[#d4af37]/30 active:scale-95"
+
+                        > <span className="relative z-10" >Start Reading</span> <div className="absolute inset-0 border border-black/10 m-1" ></div> </button> {
+                            /* Footer Date */
+                        }
+
+                        <div className="mt-8 text-[10px] font-bold tracking-[0.4em] uppercase opacity-50" > Reading Club / Tiny Kids / February 2026 </div> </div> </div>);
+            }
+
+            return (<div className="min-h-screen min-h-[100dvh] bg-transparent flex flex-col items-center justify-between p-3 md:p-6 relative overflow-y-auto overflow-x-hidden" > {
+                /* Header Controls */
+            }
+
+                <div className="w-full max-w-6xl flex justify-between items-center z-20 glass rounded-2xl px-5 py-2 border border-white/10 shadow-2xl" > <div className="flex items-center gap-3 cursor-pointer group"
+
+                    onClick={
+                        () => setView('cover')
+                    }
+
+                > <div className="bg-[#d4af37] p-1.5 rounded-lg flex items-center justify-center" > <Icon name="book" size={
+                    18
+                }
+
+                    color="black" /> </div> <span className="playfair text-sm md:text-base font-bold group-hover:text-[#d4af37] transition-colors leading-tight max-w-[150px] md:max-w-none" > The Girl Who <span className="text-[#d4af37]" >Never</span><br className="md:hidden" /> Made Mistakes </span> </div> <div className="flex gap-3 items-center" > <button onClick={
+                        () => setLang(lang === 'en' ? 'es' : 'en')
+                    }
+
+                        className="glass-dark px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-white/20 transition-all border border-white/10 flex items-center gap-2"
+
+                    > <span> {
+                        lang === 'en' ? '🇺🇸 ENG' : '🇪🇸 ESP'
+                    }
+
+                        </span> </button> <div className="flex items-center gap-1.5 glass-dark p-1 rounded-xl border border-white/5" > <button onClick={
+                            () => setTextSize(Math.max(1, textSize - 0.2))
+                        }
+
+                            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-all text-[#d4af37]"
+                            title="Disminuir texto"
+
+                        > <Icon name="minus" size={
+                            16
+                        }
+
+                            /> </button> <div className="w-6 h-6 flex items-center justify-center border-l border-r border-white/10 opacity-60" > <Icon name="type" size={
+                                14
+                            }
+
+                            /> </div> <button onClick={
+                                () => setTextSize(Math.min(2.5, textSize + 0.2))
+                            }
+
+                                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-all text-[#d4af37]"
+                                title="Aumentar texto"
+
+                            > <Icon name="plus" size={
+                                16
+                            }
+
+                                /> </button> </div> <button onClick={
+                                    () => lang === 'en' && speak()
+                                }
+
+                                    className={
+                                        `w-10 h-10 flex items-center justify-center rounded-full transition-all $ {
+                        lang==='es' ? 'bg-gray-500 opacity-50 cursor-not-allowed' : speaking ? 'bg-red-500 animate-pulse' : 'bg-[#d4af37] hover:scale-105 active:scale-95'
+                    }
+
+                    text-black shadow-lg shadow-black/20`
+                                    }
+
+                                    title={
+                                        lang === 'es' ? "Audio not available in Spanish" : "Play Audio"
+                                    }
+
+                                > <Icon name={
+                                    speaking ? "volume-x" : "volume-2"
+                                }
+
+                                    size={
+                                        18
+                                    }
+
+                                    color="black" /> </button> </div> </div> {
+                    /* Book Surface */
+                }
+
+                <div className="book-container flex-grow w-full flex items-center justify-center relative overflow-hidden py-4" > <div className={
+                    `book-card $ {
+                        turning ? 'page-turn-anim' : ''
+                    }
+
+                    max-h-full shadow-2xl overflow-hidden`
+                }
+
+                > <div className="paper-texture absolute inset-0 z-0" ></div> {
+                        /* Left Side: Illustration */
+                    }
+
+                    <div className="w-1/2 relative overflow-hidden border-r border-black/5 bg-[#f5f5f5] flex items-center justify-center" > <img src={
+                        currentStory.imageUrl
+                    }
+
+                        alt={
+                            currentStory.imageAlt
+                        }
+
+                        className="w-full h-full object-contain p-2 md:p-6 transition-transform duration-1000 hover:scale-105"
+
+                        onError={
+                            (e) => e.target.src = 'https://via.placeholder.com/400x300?text=Page+Illustration'
+                        }
+
+                    /> <div className="absolute top-4 left-4 glass-dark px-2 py-0.5 rounded-full text-[9px] font-bold tracking-tighter uppercase opacity-80" > Scene {
+                        pageIndex + 1
+                    }
+
+                        </div> </div> {
+                        /* Right Side: Text */
+                    }
+
+                    <div className="w-1/2 p-8 md:p-12 flex flex-col justify-center relative bg-white/20" > <div className="absolute top-4 right-8 text-black/20 playfair italic text-sm" > Page {
+                        currentStory.pages
+                    }
+
+                    </div> <div className="animate-fade-in flex-grow flex items-center overflow-hidden" > <p className="text-stone-800 font-serif transition-all duration-500 overflow-y-auto custom-scroll pr-4 max-h-full w-full whitespace-pre-line pb-12"
+
+                        style={
+                            {
+                                fontSize: `$ {
+                            textSize
+                        }
+
+                        rem`, lineHeight: '1.35'
+                            }
+                        }
+
+                    > {
+                            lang === 'es' ? currentStory.textEs : currentStory.textEn
+                        }
+
+                    </p> </div> <div className="absolute bottom-6 left-12 right-12 border-t border-black/5 pt-4 flex justify-between items-center opacity-30" > <span className="text-[12px] font-bold tracking-widest text-[#1a5d4e]" >Tiny Kids / Reading Club</span> <span className="handwriting text-base text-black" >February 2026</span> </div> </div> </div> </div> {
+                    /* Navigation Footer */
+                }
+
+                <div className="w-full max-w-4xl flex items-center gap-6 mb-2" > <button disabled={
+                    pageIndex === 0
+                }
+
+                    onClick={
+                        () => changePage(pageIndex - 1)
+                    }
+
+                    className="bg-white/10 p-3 rounded-full hover:bg-white/20 disabled:opacity-10 transition-all border border-white/5 active:scale-90"
+
+                > <Icon name="chevron-left" size={
+                    24
+                }
+
+                    /> </button> <div className="flex-grow group" > <div className="flex justify-between items-end mb-1.5 px-2 text-[10px] font-bold uppercase tracking-[0.2em] opacity-60" > <div className="flex items-center gap-1" > <span>Scene</span> <input type="number"
+                        min="1"
+
+                        max={
+                            storyData.length
+                        }
+
+                        value={
+                            pageIndex + 1
+                        }
+
+                        onChange={
+                            (e) => {
+                                const val = parseInt(e.target.value);
+
+                                if (!isNaN(val) && val >= 1 && val <= storyData.length) {
+                                    changePage(val - 1);
+                                }
+                            }
+                        }
+
+                        className="w-10 bg-transparent border-b border-white/20 text-center focus:outline-none focus:border-[#d4af37] transition-colors text-[#d4af37]"
+
+                    /> <span>/ {
+                        storyData.length
+                    }
+
+                        </span> </div> <span> {
+                            Math.round(progress)
+                        }
+
+                            %</span> </div> <div className="h-1.5 bg-white/10 rounded-full overflow-hidden border border-white/5 shadow-inner" > <div className="h-full bg-gradient-to-r from-[#d4af37] to-[#e6c867] transition-all duration-1000 shadow-[0_0_10px_#d4af37]"
+
+                                style={
+                                    {
+                                        width: `$ {
+                            progress
+                        }
+
+                        %`
+                                    }
+                                }
+
+                            ></div> </div> </div> <button disabled={
+                                pageIndex === storyData.length - 1
+                            }
+
+                                onClick={
+                                    () => changePage(pageIndex + 1)
+                                }
+
+                                className="bg-[#d4af37] p-3 rounded-full text-black hover:bg-[#e6c867] disabled:opacity-20 transition-all active:scale-90 shadow-lg shadow-[#d4af37]/20"
+
+                            > <Icon name="chevron-right" size={
+                                24
+                            }
+
+                        /> </button> </div> </div>);
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
