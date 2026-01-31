@@ -30,10 +30,11 @@
             background: #0f172a url('https://raw.githubusercontent.com/InstitutoTinyKids/readingclubfebrero2026/main/bg.png') no-repeat center center fixed;
             background-size: cover;
             color: #fff;
+            margin: 0;
+            padding: 0;
             min-height: 100vh;
-            min-height: 100dvh;
-            overflow-x: hidden;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
         .handwriting {
@@ -60,11 +61,11 @@
         .book-container {
             perspective: 2000px;
             width: 100%;
-            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 0.5rem;
+            margin: 1rem 0;
         }
 
         .book-card {
@@ -75,9 +76,9 @@
                 inset 10px 0 20px -10px rgba(0, 0, 0, 0.05);
             display: flex;
             width: 100%;
-            max-width: 1200px;
-            height: 70vh;
-            min-height: 400px;
+            max-width: 1350px;
+            height: 75vh;
+            min-height: 450px;
             position: relative;
             transform-style: preserve-3d;
             transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -155,6 +156,7 @@
             height: 100%;
             object-fit: contain;
             filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.08));
+            padding: 1rem;
         }
 
         .custom-scroll::-webkit-scrollbar {
@@ -215,6 +217,14 @@
                 max-width: 95% !important;
             }
 
+            .card-text-container {
+                padding: 1.5rem !important;
+            }
+
+            .card-image-container {
+                padding: 1rem !important;
+            }
+
             .book-container {
                 padding: 0.25rem !important;
                 margin: 0.5rem 0 !important;
@@ -225,25 +235,39 @@
         @media (orientation: portrait) {
             .book-card {
                 flex-direction: column !important;
-                height: 82vh !important;
-                height: 82dvh !important;
-                min-height: 520px !important;
-                width: 98% !important;
+                height: 85vh !important;
+                height: 85dvh !important;
+                min-height: 550px !important;
                 border-radius: 12px;
+                width: 98% !important;
             }
 
-            .book-card>div {
+            .card-image-container,
+            .card-text-container {
+                flex: 0 0 50% !important;
                 width: 100% !important;
+                max-width: 100% !important;
                 height: 50% !important;
             }
 
-            .book-card>div:first-child {
+            .card-image-container {
                 border-right: none !important;
                 border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                padding: 1rem !important;
             }
 
-            .book-container {
-                padding: 0.5rem !important;
+            .card-text-container {
+                padding: 1.25rem !important;
+            }
+
+            .book-footer {
+                bottom: 0.8rem !important;
+                left: 1.2rem !important;
+                right: 1.2rem !important;
+            }
+
+            .book-footer span {
+                font-size: 8.5px !important;
             }
         }
     </style>
@@ -301,7 +325,8 @@
             volume: <><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></>,
             volumeX: <><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></>,
             chevronLeft: <><polyline points="15 18 9 12 15 6"></polyline></>,
-            chevronRight: <><polyline points="9 18 15 12 9 6"></polyline></>
+            chevronRight: <><polyline points="9 18 15 12 9 6"></polyline></>,
+            close: <><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></>
         };
 
         const Icon = ({ name, size = 20, color = 'black', className = "" }) => (
@@ -327,6 +352,7 @@
             const [turning, setTurning] = useState(false);
             const [textSize, setTextSize] = useState(window.innerWidth < 500 || window.innerHeight < 600 ? 1.1 : 1.4);
             const [appReady, setAppReady] = useState(false);
+            const [zoomImage, setZoomImage] = useState(null);
 
             useEffect(() => {
                 setAppReady(true);
@@ -405,6 +431,7 @@
                         </div>
                         <div className="flex gap-1.5 md:gap-3 items-center nav-group">
                             <button onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="glass-dark px-3 md:px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/10 nav-lang-btn">{lang === 'en' ? 'ENG' : 'ESP'}</button>
+
                             <div className="flex items-center gap-1 glass-dark p-0.5 md:p-1 rounded-xl border border-white/5 nav-btn-sm">
                                 <button onClick={() => setTextSize(Math.max(1, textSize - 0.2))} className="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-[#d4af37]"><Icon name="minus" size={14} color="currentColor" /></button>
                                 <button onClick={() => setTextSize(Math.min(2.5, textSize + 0.2))} className="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-[#d4af37]"><Icon name="plus" size={14} color="currentColor" /></button>
@@ -413,18 +440,23 @@
                         </div>
                     </div>
                     <div className="book-container flex-grow w-full flex items-center justify-center relative py-4">
-                        <div className={`book-card ${turning ? 'page-turn-anim' : ''} max-h-full shadow-2xl overflow-hidden`}>
+                        <div className={`book-card ${turning ? 'page-turn-anim' : ''} max-h-[80vh] shadow-2xl overflow-hidden`}>
                             <div className="paper-texture absolute inset-0 z-0"></div>
 
-                            <div className="card-image-container relative z-10">
+                            <div
+                                className="card-image-container relative z-10 cursor-zoom-in group"
+                                onClick={() => setZoomImage(`${REPO_URL}${currentStory.imageUrl}`)}
+                            >
                                 <img
                                     src={`${REPO_URL}${currentStory.imageUrl}`}
                                     alt={currentStory.imageAlt}
-                                    className="standard-img"
+                                    className="standard-img transition-transform duration-300 group-hover:scale-[1.02]"
                                 />
                             </div>
 
-                            <div className="card-text-container relative z-10">
+                            <div
+                                className="card-text-container relative z-10"
+                            >
                                 <p className="text-stone-800 font-serif overflow-y-auto custom-scroll pr-4 max-h-full w-full whitespace-pre-line pb-12" style={{ fontSize: `${textSize}rem`, lineHeight: '1.4' }}>
                                     {lang === 'es' ? currentStory.textEs : currentStory.textEn}
                                 </p>
@@ -450,6 +482,16 @@
                         </div>
                         <button disabled={pageIndex === storyData.length - 1} onClick={() => changePage(pageIndex + 1)} className="bg-[#d4af37] p-3 rounded-full text-black shadow-lg shadow-[#d4af37]/20"><Icon name="chevronRight" size={24} color="black" /></button>
                     </div>
+
+                    {/* 🔍 MODAL DE ZOOM 🔍 */}
+                    {zoomImage && (
+                        <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 animate-in fade-in duration-300" onClick={() => setZoomImage(null)}>
+                            <button className="absolute top-6 right-6 bg-white/10 hover:bg-white/20 p-3 rounded-full text-white transition-all shadow-2xl">
+                                <Icon name="close" size={28} color="white" />
+                            </button>
+                            <img src={zoomImage} className="max-w-full max-h-full object-contain shadow-2xl rounded-lg" />
+                        </div>
+                    )}
                 </div>
             );
         }
