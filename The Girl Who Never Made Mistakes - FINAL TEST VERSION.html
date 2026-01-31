@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<!-- Version: 1.1.2 - Educational Premium Restored UI -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>The Girl Who Never Made Mistakes | Educational Premium</title>
+
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;600;700&family=Playfair+Display:wght@700;800&family=Outfit:wght@400;600&display=swap');
+
+        :root {
+            --primary: #1a5d4e;
+            --accent: #d4af37;
+            --bg-paper: #fdfaf5;
+            --note-paper: #fffdf0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #0f172a url('https://raw.githubusercontent.com/InstitutoTinyKids/readingclubfebrero2026/main/bg.png') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .handwriting {
+            font-family: 'Patrick Hand', cursive;
+        }
+
+        .playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .book-container {
+            perspective: 2000px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .book-card {
+            background: var(--bg-paper);
+            border-radius: 12px;
+            box-shadow: -10px 10px 30px rgba(0, 0, 0, 0.4);
+            display: flex;
+            width: 100%;
+            max-width: 1350px;
+            height: 75vh;
+            min-height: 450px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .book-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 30px;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.05) 50%, transparent 100%);
+            z-index: 10;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .paper-texture {
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .card-image-container {
+            flex: 0 0 50% !important;
+            width: 50% !important;
+            max-width: 50% !important;
+            background: #f8f8f8;
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            box-sizing: border-box;
+        }
+
+        .card-text-container {
+            flex: 0 0 50% !important;
+            width: 50% !important;
+            max-width: 50% !important;
+            padding: 2.5rem !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .standard-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.08));
+            padding: 1rem;
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 10px;
+        }
+
+        .gold-frame {
+            border: 2px solid #d4af37;
+            padding: 10px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .cover-shadow {
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.5), 0 18px 36px -18px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 📝 NOTEBOOK STYLE PANEL 📝 */
+        .note-panel {
+            background: var(--note-paper);
+            background-image: radial-gradient(#d1d1d1 1px, transparent 1px);
+            background-size: 20px 20px;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
+            border-left: 2px solid #e5e0c5;
+        }
+
+        .note-header-line {
+            border-bottom: 2px solid #ffcccc;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .note-margin {
+            border-right: 1px solid #ffcccc;
+            width: 40px;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        @media (max-width: 480px) {
+            .nav-title {
+                display: block !important;
+                font-size: 10px !important;
+            }
+
+            .nav-group {
+                gap: 0.35rem !important;
+            }
+
+            .nav-btn-sm {
+                transform: scale(0.8);
+            }
+
+            .nav-lang-btn {
+                padding-left: 0.4rem !important;
+                padding-right: 0.4rem !important;
+                font-size: 8px !important;
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 850px) {
+            .book-card {
+                height: 65vh !important;
+                min-height: 380px !important;
+                max-width: 95% !important;
+            }
+
+            .card-text-container {
+                padding: 1.5rem !important;
+            }
+
+            .card-image-container {
+                padding: 1rem !important;
+            }
+
+            .book-container {
+                padding: 0.25rem !important;
+                margin: 0.5rem 0 !important;
+                flex-grow: 1;
+            }
+        }
+
+        @media (orientation: portrait) {
+            .book-card {
+                flex-direction: column !important;
+                height: 85vh !important;
+                min-height: 550px !important;
+                width: 98% !important;
+            }
+
+            .card-image-container,
+            .card-text-container {
+                flex: 0 0 50% !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .card-image-container {
+                border-right: none !important;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const REPO_URL = "https://raw.githubusercontent.com/InstitutoTinyKids/readingclubfebrero2026/main/";
+
+        const storyData = [
+            { id: 1, pages: "4", imageUrl: "page_4.png", textEn: "For Beatrice Bottomwell, Friday began like any other day.", textEs: "Para Beatrice Bottomwell, el viernes comenzó como cualquier otro día.", phonics: "Long 'a' sound (Frid-ay, d-ay); /f/ in 'Friday'; /b/ in 'began'", verbs: "Began (Past of begin - irregular); started", connectors: "For... (Opening phrase); Like (Comparison)", writing: "Capitalization: Proper nouns (Beatrice) and Days/Months (Friday)." },
+            { id: 2, pages: "5", imageUrl: "page_5.png", textEn: "She matched her socks. And, of course, she put her shoes on their proper feet.", textEs: "Emparejó sus calcetines. Y, por supuesto, se puso los zapatos en los pies correctos.", phonics: "-ed as /t/ (matched); /s/ in 'socks' and 'shoes'", verbs: "Matched (Regular past); Put (Irregular past - remains 'put')", connectors: "And (Conjunction for emphasis); Of course (Idiomatic transition)", writing: "Plural forms: socks, shoes, feet (Irregular plural of foot)." },
+            { id: 3, pages: "6", imageUrl: "page_6.png", textEn: "She remembered to feed her hamster, Humbert, his favorite food, broccoli.\n\nAnd when she made a sandwich for her brother Carl's lunch, she used exactly the same amount of peanut butter as jelly.", textEs: "Se acordó de alimentar a su hámster, Humbert, con su comida favorita: brócoli.\n\nY cuando le preparó un sándwich a su hermano Carl para el almuerzo, usó exactamente la misma cantidad de mantequilla de maní que de mermelada.", phonics: "Double letters /ee/ (feed), /oo/ (food, broccoli); /ch/ in sandwich", verbs: "Remembered (Regular); Feed (Infinitive); Made (Past of make); Used (Regular)", connectors: "When (Time connector); Exactly (Adverb of manner); As...as (Comparison)", writing: "Possession: Carl's lunch (Apostrophe s indicating ownership)." },
+            { id: 4, pages: "7", imageUrl: "page_7.png", textEn: "When she stepped outside to greet her fans, she didn't forget to say 'good morning' and 'thank you.'", textEs: "Cuando salió a saludar a sus fans, no olvidó decir 'buenos días' y 'gracias'.", phonics: "/oo/ in good; /th/ in thank; /ee/ in greet", verbs: "Stepped (Double 'p' before -ed); Greet; Forget; Say", connectors: "When (Sequence); Didn't forget (Negative past)", writing: "Quotation marks: Used for direct speech ('good morning')." },
+            { id: 5, pages: "8", imageUrl: "page_8.png", textEn: "They asked if she made her bed. She had.\n\nThey asked if she forgot to do her math homework. Nope.\n\n'What about tonight's talent show?' they asked. 'I'm ready!' said Beatrice with a smile. After all, her juggling act had won three years in a row.", textEs: "¿Hiciste la cama? Sí. ¿Tarea de matemáticas? No.\n\n'¿Y el show de talentos?', preguntaron. '¡Lista!', dijo Beatrice. Su acto de malabares había ganado tres años seguidos.", phonics: "Short /i/ (if); /a/ in math; /ow/ in row", verbs: "Asked; Had; Forgot; Do; Said; Won (Past of win)", connectors: "If (Condition); What about (Questioning transition); After all (Concluding thought)", writing: "Contractions: I'm (I am); Tonight's (Possessive)." },
+            { id: 6, pages: "9", imageUrl: "page_9.png", textEn: "Most people in town didn't even know Beatrice's name. \n\nThey just called her 'the Girl Who Never Makes Mistakes,' because for as long as anyone could remember, she never did.", textEs: "Mucha gente ni sabía su nombre. La llamaban 'la Chica Que Nunca Comete Errores', porque nunca lo había hecho.", phonics: "Silent 'k' (know); /o/ in town; /e/ in name (Magic E)", verbs: "Know; Called; Makes; Remember; Did", connectors: "Because (Reason); For as long as (Duration connector)", writing: "Adverbs of frequency: Never (Always, often, never)." },
+            { id: 7, pages: "10", imageUrl: "page_10.png", textEn: "Unlike Beatrice, Carl made lots of mistakes.\n\nHe ate his crayons and drew with his green beans. \n\nHe danced with his hands and played the piano with his feet. \n\nCarl loved to make mistakes!", textEs: "A diferencia de Beatrice, Carl cometía muchos errores. Comía crayones y bailaba con las manos. ¡A Carl le encantaba cometer errores!", phonics: "/ea/ in beans; /oo/ in feet; /ow/ in drew (/u/ sound)", verbs: "Ate (Past of eat); Drew (Past of draw); Danced (Regular); Played (Regular); Loved", connectors: "Unlike (Contrast connector); And (Addition)", writing: "Prepositions: WITH his hands (Instrumental 'with')." },
+            { id: 8, pages: "11", imageUrl: "page_11.png", textEn: "At school, Beatrice was on a cooking team with her two best friends, Millie and Sarah. To make their giant rhubarb muffins, they needed four eggs.\n\nBeatrice went to the refrigerator and carefully chose the biggest, eggiest eggs she could find.", textEs: "En la escuela, Beatrice estaba en un equipo de cocina. Necesitaban cuatro huevos para los muffins de ruibarbo. Beatrice fue al refrigerador y eligió los mejores huevos.", phonics: "/oo/ in school; /oa/ in rhubarb; /i/ in biggest", verbs: "Was (Past of be); Make; Needed; Went (Past of go); Chose (Past of choose); Find", connectors: "To... (Purpose connector); And (Addition); Carefully (Manner)", writing: "Superlatives: Biggest, eggiest (Indicating the extreme degree)." },
+            { id: 9, pages: "12", imageUrl: "page_12.png", textEn: "But on the way back, her legs slipped out from under her. \n\nThe eggs went flying.\n\nBeatrice was about to make her first mistake...", textEs: "Pero al volver, sus piernas resbalaron. ¡Los huevos salieron volando!\n\nBeatrice estaba a punto de cometer su primer error...", phonics: "Short /i/ in slipped; /y/ as /ai/ in flying", verbs: "Slipped (Double 'p'); Went; Flying (Present participle); Was; Make", connectors: "But (Contrast/Crisis); About to (Future intention in the past)", writing: "Ellipsis (...): Used to create suspense or an unfinished thought." },
+            { id: 10, pages: "13", imageUrl: "page_13.png", textEn: "But she didn't! 'That was close!' thought Beatrice.\n\n'Sorry, Beatrice... I dropped a piece of rhubarb.'\n\n'-on't -ention it, -illie.'", textEs: "¡Pero no lo hizo! '¡Estuvo cerca!', pensó Beatrice.\n\n'Perdona, Beatrice... se me cayó un trozo de ruibarbo'.\n\n'No tiene importancia, Millie'.", phonics: "/th/ in thought; /o/ in close; /ie/ in piece", verbs: "Didn't (Negative past); Thought (Past of think); Dropped", connectors: "But (Resolution); That was (Declarative)", writing: "Apology & Response: 'Sorry' and the polite refusal of thanks." },
+            { id: 11, pages: "14", imageUrl: "page_14.png", textEn: "For the rest of the school day, Beatrice could not stop thinking about her Almost Mistake.", textEs: "El resto del día escolar, Beatrice no pudo dejar de pensar en su 'Casi Error'.", phonics: "/rest/ sound; /th/ in thinking", verbs: "Could not (Modal auxiliary); Stop; Thinking (Gerund after stop)", connectors: "For... (Duration); Almost (Adverb of degree)", writing: "Compound noun: School day." },
+            { id: 12, pages: "15", imageUrl: "page_15.png", textEn: "On her way home from school, Beatrice watched Millie and Sarah ice-skating in the park.\n\n'Come join us!' said Millie. 'It's fun!' said Sarah.\n\nBeatrice watched them slip and slide on the frozen pond. Millie and Sarah laughed as they wobbled on the ice.\n\n'No, thanks,' said Beatrice.", textEs: "De camino a casa desde la escuela, Beatrice vio a Millie y Sarah patinando en el parque.\n\n'¡Vengan con nosotras!', dijo Millie. '¡Es divertido!', dijo Sarah.\n\nBeatrice las vio resbalar y deslizarse en el estanque congelado. Millie y Sarah se reían mientras se tambaleaban en el hielo.\n\n'No, gracias', dijo Beatrice.", phonics: "/o/ in home; /oi/ in join; /augh/ in laughed (/f/ sound)", verbs: "Watched; Come; Join; Said; Slip; Slide; Laughed; Wobbled", connectors: "On her way (Time); As (Simultaneous action)", writing: "Exclamation marks: Used to show excitement ('It's fun!')." },
+            { id: 13, pages: "16", imageUrl: "page_16.png", textEn: "At supper, Beatrice barely touched her food.\n\n'Is everything all right, kiddo?' asked her father.\n\n'I'm worried I'll mess up tonight,' said Beatrice. 'And everyone will be watching.'\n\n'Worry? You don't make mistakes!' he said with a smile.\n\nBeatrice tried to smile too.", textEs: "En la cena, Beatrice apenas probó bocado.\n\n'¿Está todo bien, pequeña?', preguntó su padre.\n\n'Me preocupa fallar esta noche', dijo Beatrice. 'Y todo el mundo estará mirando'.\n\n'¿Preocuparte? ¡Tú no cometes errores!', dijo él con una sonrisa. Beatrice intentó sonreír también.", phonics: "/u/ in supper; /igh/ in right; /or/ in worried", verbs: "Touched; Asked; Worried; Mess up (Phrasal verb); Watching; Tried; Smile", connectors: "Barely (Adverb of degree); I'll (Future intention); Too (Addition)", writing: "Questions: Inverted subject-verb order ('Is everything...')." },
+            { id: 14, pages: "17", imageUrl: "page_17.png", textEn: "After supper, Beatrice got ready for the talent show.\n\nFirst, she woke Humbert from his nap. \n\nNext, she got the salt shaker from the kitchen table. \n\nFinally, she filled a balloon with water.", textEs: "Tras la cena, se preparó para el show. Despertó a Humbert, tomó el salero y llenó un globo con agua.", phonics: "/o/ in woke; /a/ in shaker; /ll/ in filled", verbs: "Got; Woke (Past of wake); Filled", connectors: "First, Next, Finally (Sequence connectors)", writing: "Items & Lists: Identifying objects (shaker, table, balloon)." },
+            { id: 15, pages: "18", imageUrl: "page_18.png", textEn: "The school auditorium was packed! Beatrice felt her stomach jumping around inside her.", textEs: "¡El auditorio estaba lleno! Beatrice sentía mariposas en el estómago.", phonics: "/au/ in auditorium; /felt/ sound; /u/ in jumping", verbs: "Was; Felt (Past of feel); Jumping (Present continuous in the past)", connectors: "Inside (Preposition of place)", writing: "Metaphor/Simile: Feeling the stomach 'jumping' to express nervousness." },
+            { id: 16, pages: "19", imageUrl: "page_19.png", textEn: "Beatrice waited for her juggling music to begin. \n\n'That's her! That's the Girl Who Never Makes Mistakes!' said a woman.\n\n'Oh! We know she'll be perfect!' said a man.\n\nWhen the music started, she tossed Humbert into the air.\n\nNext, she added the salt shaker.\n\nAnd finally, the water balloon.", textEs: "'¡Es ella! ¡La chica que nunca comete errores!', dijo una mujer. '¡Sabemos que será perfecta!', dijo un hombre.\n\nCuando empezó la música, lanzó a Humbert, luego el salero y el globo.", phonics: "/u/ in juggling; /perfect/ sound; /sh/ in shaker", verbs: "Waited; Begin; Said; Know; Started; Tossed; Added", connectors: "When (Time); Next, Finally (Sequence)", writing: "Identifying people: woman, man." },
+            { id: 17, pages: "20", imageUrl: "page_20.png", textEn: "Beatrice didn't miss a beat! The crowd clapped with delight.\n\nBut Beatrice noticed something odd about the salt shaker...\n\nThe specks falling out of it were not white!", textEs: "¡No perdió el ritmo! La multitud aplaudía. Pero Beatrice notó algo raro en el salero... ¡Las motas no eran blancas!", phonics: "/ss/ in miss; /ea/ in beat; /igh/ in white", verbs: "Didn't miss; Clapped; Noticed; Falling; Were", connectors: "But (Contrast); About (Subject indicator)", writing: "Adjectives: Odd, white (Describing nouns)." },
+            { id: 18, pages: "21", imageUrl: "page_21.png", textEn: "AAHHCH...", textEs: "¡¡¡AAHHCH!!!", phonics: "Onomatopoeia: Sneeze sound", verbs: "-", connectors: "-", writing: "Sound words in writing." },
+            { id: 19, pages: "22", imageUrl: "page_22.png", textEn: "OOO!!!", textEs: "¡¡¡OOO!!!", phonics: "Expression of shock", verbs: "-", connectors: "-", writing: "Exclamations for emotion." },
+            { id: 20, pages: "23", imageUrl: "page_23.png", textEn: "Humbert was so surprised by his sneeze that he grabbed the water balloon with his claws.\n\nKABLOOIE!", textEs: "Humbert se sorprendió tanto por su estornudo que agarró el globo de agua con sus garras.\n\n¡KABLOOIE!", phonics: "/ur/ in surprised; /ee/ in sneeze; /aw/ in claws", verbs: "Was; Surprised; Grabbed (Double 'b')", connectors: "So... that (Cause and effect)", writing: "Onomatopoeia: KABLOOIE (Visual representation of a sound/explosion)." },
+            { id: 21, pages: "24", imageUrl: "page_24.png", textEn: "Humbert, pieces of water balloon, and the pepper rained down on top of Beatrice.\n\nFor the first time in as long as anyone could remember, Beatrice made a mistake.\n\nAnd it was a big one!", textEs: "Humbert, trozos de globo y pimienta cayeron sobre ella. ¡Por primera vez, Beatrice cometió un error! ¡Y uno grande!", phonics: "/ai/ in rained; /e/ in pepper; /i/ in big", verbs: "Rained; Remember; Made; Was", connectors: "For the first time (Time emphasis); And (Addition)", writing: "Pronouns: Anyone, it." },
+            { id: 22, pages: "25", imageUrl: "page_25.png", textEn: "The music stopped.\n\nBeatrice didn't know what to do. Cry?\n\nRun off the stage?", textEs: "La música se detuvo. Beatrice no sabía qué hacer. ¿Llorar? ¿Huir del escenario?", phonics: "/st/ in stopped; /o/ in do; /cry/ sound", verbs: "Stopped; Didn't know; Do; Cry; Run", connectors: "What to do? (Questioning hesitation)", writing: "Short sentences: Used to show panic or doubt." },
+            { id: 23, pages: "26", imageUrl: "page_26.png", textEn: "The crowd sat stunned. They couldn't believe that the Girl Who Never Makes Mistakes made a mistake!", textEs: "La multitud estaba atónita. ¡No podían creer que ella cometiera un error!", phonics: "/ow/ in crowd; /u/ in stunned; /ie/ in believe", verbs: "Sat (Past of sit); Stunned; Couldn't; Believe; Makes; Made", connectors: "That (Relative clause)", writing: "Title as identity: 'the Girl Who Never Makes Mistakes'." },
+            { id: 24, pages: "27", imageUrl: "page_27.png", textEn: "Beatrice looked up at Humbert.\n\nHe looked back at her.\n\nHis hamster fur was soaked and speckled with bits of balloon.\n\nBeatrice let out a giggle. The giggle grew into a chuckle. And the chuckle became a laugh.", textEs: "Beatrice miró a Humbert. Estaba empapado con trozos de globo. Soltó una risita, que se convirtió en carcajada y luego en risa.", phonics: "/oo/ in looked; /u/ in chuckle; /gh/ as /f/ in laugh", verbs: "Looked; Was; Soaked; Speckled; Let out (Phrasal); Grew (Past of grow); Became (Past of become)", connectors: "And (Sequence of escalation)", writing: "Synonyms for laughing: Giggle, chuckle, laugh." },
+            { id: 25, pages: "28", imageUrl: "page_28.png", textEn: "The people in the crowd looked at each other and then back at Beatrice. They began to giggle. Then chuckle. Then-finally-roar with laughter.\n\nBeatrice and the audience laughed until they couldn't remember why they were laughing.", textEs: "La gente se miró y luego miró a Beatrice. Empezaron a reír. Al final, todos rugieron de risa hasta olvidar por qué se reían.", phonics: "/ou/ in audience; /oa/ in roar; /y/ in why", verbs: "Looked; Began; Laughed; Couldn't; Remember; Were; Laughing", connectors: "Then... then... finally (Sequence); Until (Time limit)", writing: "Collective nouns: Crowd, audience." },
+            { id: 26, pages: "29", imageUrl: "page_29.png", textEn: "That night, Beatrice slept better than she ever had!", textEs: "¡Esa noche, Beatrice durmió mejor que nunca!", phonics: "/igh/ in night; /e/ in slept; /th/ in than", verbs: "Slept (Past of sleep); Had", connectors: "Than (Comparison); Ever (Adverb of frequency)", writing: "Exclamation: Showing a positive result." },
+            { id: 27, pages: "30", imageUrl: "page_30.png", textEn: "In the morning, no fans greeted Beatrice.\n\nWhen she got dressed, Beatrice for no reason at all-put a polka dot sock on one foot and a plaid sock on the other.", textEs: "A la mañana no había admiradores. Al vestirse, se puso un calcetín de lunares y otro de cuadros.", phonics: "/o/ in polka; /ai/ in plaid (irregular: /a/); /th/ in other", verbs: "Greeted; Got; Dressed; Put", connectors: "In the morning (Time); When (Sequence); For no reason at all (Phrase)", writing: "Determiners: No, one, the other." },
+            { id: 28, pages: "31", imageUrl: "page_31.png", textEn: "Beatrice and Carl made sandwiches. This time, they put the peanut butter and jelly on the outside. They called it an Inside Out PB & J! \n\nLunch was messy and delicious!", textEs: "Beatrice y Carl hicieron sándwiches con los ingredientes por fuera. ¡Fue un almuerzo desordenado y rico!", phonics: "/ow/ in outside; /u/ in lunch; /ci/ in delicious", verbs: "Made; Put; Called; Was", connectors: "This time (Contrast); And (Addition)", writing: "Antonyms: Inside vs Outside." },
+            { id: 29, pages: "32", imageUrl: "page_32.png", textEn: "Later, Beatrice found Millie and Sarah skating in the park. \n\nThey fell a lot. And laughed!", textEs: "Luego patinó con sus amigas. Se cayeron mucho. ¡Y se rieron!", phonics: "/ay/ in later; /ou/ in found; /a/ in skating", verbs: "Found (Past of find); Skating; Fell (Past of fall); Laughed", connectors: "Later (Time jump); A lot (Adverbial phrase)", writing: "Action and reaction: Learning that falling leads to laughter." },
+            { id: 30, pages: "33", imageUrl: "page_33.png", textEn: "Now, people no longer call her the Girl Who Never Makes Mistakes. \n\nThey just call her Beatrice.", textEs: "Ahora ya no la llaman la Chica Que Nunca Comete Errores. Simplemente la llaman Beatrice.", phonics: "/ow/ in now; /ong/ in longer; /ea/ in Beatrice", verbs: "Call; Longer call; Makes", connectors: "Now (Present time); No longer (Absence of state)", writing: "Transition of identity: From a title to her own name." },
+            { id: 31, pages: "34", imageUrl: "page_34.png", textEn: "Beatrice Bottomwell has NEVER (not once!) made a mistake...", textEs: "Beatrice Bottomwell NUNCA (¡ni una sola vez!) ha cometido un error...", phonics: "/e/ in never; /made/ sound; /o/ in once", verbs: "Has made (Present perfect); Made", connectors: "Not once (Emphasis)", writing: "Parenthesis (...): Used for adding extra comments or emphasis." },
+            { id: 32, pages: "End", imageUrl: "page_1.png", textEn: "THE END", textEs: "FIN", phonics: "/th/ in the; /e/ in end", verbs: "-", connectors: "-", writing: "Story conclusion mark." }
+        ];
+
+        const SVGIcons = {
+            book: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></>,
+            plus: <><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></>,
+            minus: <><line x1="5" y1="12" x2="19" y2="12"></line></>,
+            volume: <><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></>,
+            volumeX: <><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></>,
+            chevronLeft: <><polyline points="15 18 9 12 15 6"></polyline></>,
+            chevronRight: <><polyline points="9 18 15 12 9 6"></polyline></>,
+            close: <><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></>,
+            notes: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><path d="M9 7h6"></path><path d="M9 11h6"></path><path d="M9 15h4"></path></>
+        };
+
+        const Icon = ({ name, size = 20, color = 'black', className = "" }) => (
+            <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size }} className={className}>
+                {SVGIcons[name]}
+            </svg>
+        );
+
+        function App() {
+            const [view, setView] = useState('cover');
+            const [pageIndex, setPageIndex] = useState(0);
+            const [lang, setLang] = useState('en');
+            const [speaking, setSpeaking] = useState(false);
+            const [turning, setTurning] = useState(false);
+            const [textSize, setTextSize] = useState(window.innerWidth < 500 || window.innerHeight < 600 ? 1.1 : 1.4);
+            const [appReady, setAppReady] = useState(false);
+            const [zoomImage, setZoomImage] = useState(null);
+            const [showNotes, setShowNotes] = useState(false);
+
+            useEffect(() => {
+                setAppReady(true);
+                const handleResize = () => {
+                    if (window.innerWidth < 500 || window.innerHeight < 600) setTextSize(1.1);
+                    else setTextSize(1.4);
+                };
+                window.addEventListener('resize', handleResize);
+                return () => window.removeEventListener('resize', handleResize);
+            }, []);
+
+            const audioRef = useRef(null);
+            const currentStory = storyData[pageIndex];
+
+            useEffect(() => {
+                if (audioRef.current) { audioRef.current.pause(); audioRef.current.currentTime = 0; setSpeaking(false); }
+                setShowNotes(false);
+            }, [pageIndex, lang, view]);
+
+            const changePage = (idx) => {
+                if (idx < 0 || idx >= storyData.length) return;
+                setTurning(true);
+                setTimeout(() => { setPageIndex(idx); setTurning(false); }, 300);
+            };
+
+            const speak = () => {
+                if (speaking) { if (audioRef.current) audioRef.current.pause(); setSpeaking(false); return; }
+                const idStr = currentStory.id.toString().padStart(2, '0');
+                const audio = new Audio(`${REPO_URL}audios/audio${idStr}.wav`);
+                audioRef.current = audio;
+                audio.onended = () => setSpeaking(false);
+                audio.play().then(() => setSpeaking(true)).catch(() => setSpeaking(false));
+            };
+
+            const progress = ((pageIndex + 1) / storyData.length) * 100;
+
+            if (!appReady) return <div className="min-h-screen bg-[#1a5d4e] flex items-center justify-center font-bold text-white">Loading...</div>;
+
+            if (view === 'cover') {
+                return (
+                    <div className="min-h-screen min-h-[100dvh] w-full flex flex-col items-center justify-start pt-16 md:justify-center md:pt-0 relative overflow-y-auto font-sans p-4">
+                        <div className="absolute inset-0 z-0 opacity-20">
+                            <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-[#d4af37] rounded-full blur-[120px] animate-pulse"></div>
+                            <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-[#1a5d4e] rounded-full blur-[120px] animate-pulse"></div>
+                        </div>
+                        <div className="z-10 text-center max-w-2xl flex flex-col items-center">
+                            <div className="floating mb-6 relative group">
+                                <div className="gold-frame rounded-sm p-2 shadow-2xl">
+                                    <img src={`${REPO_URL}page_1.png`} className="relative w-48 md:w-56 h-auto mx-auto rounded-sm cover-shadow" />
+                                </div>
+                            </div>
+                            <div className="mb-6 text-center">
+                                <h1 className="playfair text-4xl md:text-5xl font-bold mb-2 leading-tight">
+                                    <span className="italic text-2xl md:text-3xl font-light opacity-80 block">The Girl Who</span>
+                                    <span className="text-[#d4af37] tracking-wider mx-2">NEVER</span> Made Mistakes
+                                </h1>
+                                <p className="text-lg md:text-xl handwriting opacity-80 tracking-wide">By <span className="text-[#d4af37]">Mark Pett</span> & <span className="text-[#d4af37]">Gary Rubinstein</span></p>
+                            </div>
+                            <button onClick={() => setView('reading')} className="bg-[#d4af37] text-black px-12 py-3.5 rounded-sm font-bold text-sm tracking-[0.2em] uppercase hover:bg-[#b08d2b] shadow-xl">Start Reading</button>
+                            <div className="mt-8 text-[10px] font-bold tracking-[0.4em] uppercase opacity-50">Reading Club / Tiny Kids / February 2026</div>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen min-h-[100dvh] bg-transparent flex flex-col items-center justify-between p-3 md:p-6 relative overflow-y-auto overflow-x-hidden">
+                    <div className="w-full max-w-6xl flex justify-between items-center z-20 glass rounded-2xl px-3 md:px-5 py-2 border border-white/10 shadow-2xl">
+                        <div className="flex items-center gap-2 md:gap-3 cursor-pointer group" onClick={() => setView('cover')}>
+                            <div className="bg-[#d4af37] p-1.5 rounded-lg flex items-center justify-center nav-btn-sm"><Icon name="book" size={18} color="black" /></div>
+                            <span className="playfair text-sm md:text-base font-bold group-hover:text-[#d4af37] transition-colors leading-tight nav-title">The Girl Who <span className="text-[#d4af37]">Never</span> Made Mistakes</span>
+                        </div>
+                        <div className="flex gap-1.5 md:gap-3 items-center nav-group">
+                            <button onClick={() => setLang(lang === 'en' ? 'es' : 'en')} className="glass-dark px-3 md:px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/10 nav-lang-btn">{lang === 'en' ? 'ENG' : 'ESP'}</button>
+                            <div className="flex items-center gap-1 glass-dark p-0.5 md:p-1 rounded-xl border border-white/5 nav-btn-sm">
+                                <button onClick={() => setTextSize(Math.max(1, textSize - 0.2))} className="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-[#d4af37]"><Icon name="minus" size={14} color="currentColor" /></button>
+                                <button onClick={() => setTextSize(Math.min(2.5, textSize + 0.2))} className="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-[#d4af37]"><Icon name="plus" size={14} color="currentColor" /></button>
+                            </div>
+                            <button onClick={() => lang === 'en' && speak()} className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full nav-btn-sm ${lang === 'es' ? 'bg-gray-500 opacity-50 cursor-not-allowed' : speaking ? 'bg-red-500 animate-pulse' : 'bg-[#d4af37]'} text-black shadow-lg shadow-black/20`}><Icon name={speaking ? "volumeX" : "volume"} size={18} color="black" /></button>
+                        </div>
+                    </div>
+                    <div className="book-container flex-grow w-full flex items-center justify-center relative py-4">
+                        <div className={`book-card ${turning ? 'page-turn-anim' : ''} max-h-[80vh] shadow-2xl overflow-hidden`}>
+                            <div className="paper-texture absolute inset-0 z-0"></div>
+                            <div className="card-image-container relative z-10 cursor-zoom-in group" onClick={() => setZoomImage(`${REPO_URL}${currentStory.imageUrl}`)}>
+                                <img src={`${REPO_URL}${currentStory.imageUrl}`} className="standard-img transition-transform duration-300 group-hover:scale-[1.02]" />
+                            </div>
+                            <div className="card-text-container relative z-10">
+                                <p className="text-stone-800 font-serif overflow-y-auto custom-scroll pr-4 max-h-full w-full whitespace-pre-line pb-12" style={{ fontSize: `${textSize}rem`, lineHeight: '1.4' }}>
+                                    {lang === 'es' ? currentStory.textEs : currentStory.textEn}
+                                </p>
+
+                                <button onClick={() => setShowNotes(true)} className="absolute top-4 right-4 bg-[#1a5d4e] hover:bg-[#144a3e] text-white p-2.5 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-20 group">
+                                    <Icon name="notes" size={20} color="white" />
+                                    <span className="absolute right-full mr-2 px-2 py-1 bg-black/80 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none uppercase tracking-widest">Phonics & Verbs</span>
+                                </button>
+
+                                {showNotes && (
+                                    <div className="absolute inset-0 z-40 note-panel p-10 flex flex-col animate-in slide-in-from-right duration-500">
+                                        <div className="note-margin"></div>
+                                        <button onClick={() => setShowNotes(false)} className="absolute top-4 right-4 p-2 hover:bg-black/5 rounded-full z-50">
+                                            <Icon name="close" size={24} color="#1a5d4e" />
+                                        </button>
+                                        <div className="note-header-line"><h2 className="playfair text-2xl text-[#1a5d4e] font-bold pb-2 pl-4">Creative Writing & Study Notes</h2></div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 overflow-y-auto pr-2 pl-4">
+                                            <div>
+                                                <h3 className="text-[#1a5d4e] font-bold text-[10px] uppercase tracking-widest mb-2 border-b border-[#1a5d4e]/10 pb-1">Phonics Focus</h3>
+                                                <p className="text-stone-700 handwriting text-2xl">{currentStory.phonics}</p>
+                                            </div>
+                                            <div>
+                                                <h3 className="text-[#1a5d4e] font-bold text-[10px] uppercase tracking-widest mb-2 border-b border-[#1a5d4e]/10 pb-1">Verbs & Tenses</h3>
+                                                <p className="text-stone-700 handwriting text-2xl">{currentStory.verbs}</p>
+                                            </div>
+                                            <div>
+                                                <h3 className="text-[#1a5d4e] font-bold text-[10px] uppercase tracking-widest mb-2 border-b border-[#1a5d4e]/10 pb-1">Connectors</h3>
+                                                <p className="text-stone-700 handwriting text-2xl">{currentStory.connectors}</p>
+                                            </div>
+                                            <div>
+                                                <h3 className="text-[#1a5d4e] font-bold text-[10px] uppercase tracking-widest mb-2 border-b border-[#1a5d4e]/10 pb-1">Writing Tips</h3>
+                                                <p className="text-stone-700 handwriting text-2xl">{currentStory.writing}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="book-footer absolute bottom-6 left-12 right-12 border-t border-black/5 pt-4 flex justify-between items-center opacity-30">
+                                    <span className="text-[12px] font-bold tracking-widest text-[#1a5d4e]">Tiny Kids / Reading Club</span>
+                                    <span className="handwriting text-base text-black">February 2026</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="w-full max-w-4xl flex items-center gap-6 mb-2">
+                        <button disabled={pageIndex === 0} onClick={() => changePage(pageIndex - 1)} className="bg-white/10 p-3 rounded-full border border-white/5 disabled:opacity-10"><Icon name="chevronLeft" size={24} color="white" /></button>
+                        <div className="flex-grow">
+                            <div className="flex justify-between items-end mb-1.5 px-2 text-[10px] font-bold uppercase tracking-[0.2em] opacity-60">
+                                <div className="flex items-center gap-1"><span>Scene</span><input type="number" min="1" max={storyData.length} value={pageIndex + 1} onChange={(e) => { const val = parseInt(e.target.value); if (!isNaN(val) && val >= 1 && val <= storyData.length) changePage(val - 1); }} className="w-10 bg-transparent border-b border-white/20 text-center text-[#d4af37]" /><span>/ {storyData.length}</span></div>
+                                <span>{Math.round(progress)}%</span>
+                            </div>
+                            <div className="h-1.5 bg-white/10 rounded-full border border-white/5 overflow-hidden"><div className="h-full bg-gradient-to-r from-[#d4af37] to-[#e6c867] transition-all duration-1000 shadow-[0_0_10px_#d4af37]" style={{ width: `${progress}%` }}></div></div>
+                        </div>
+                        <button disabled={pageIndex === storyData.length - 1} onClick={() => changePage(pageIndex + 1)} className="bg-[#d4af37] p-3 rounded-full text-black shadow-lg shadow-[#d4af37]/20"><Icon name="chevronRight" size={24} color="black" /></button>
+                    </div>
+
+                    {zoomImage && (
+                        <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 animate-in fade-in duration-300" onClick={() => setZoomImage(null)}>
+                            <button className="absolute top-6 right-6 bg-white/10 hover:bg-white/20 p-3 rounded-full text-white transition-all shadow-2xl"><Icon name="close" size={28} color="white" /></button>
+                            <img src={zoomImage} className="max-w-full max-h-full object-contain shadow-2xl rounded-lg" />
+                        </div>
+                    )}
+                </div>
+            );
+        }
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
